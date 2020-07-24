@@ -32,19 +32,19 @@ namespace Yconvert
             static const CodePageRange ASCII_CHARS = {0x0000, 0, 127};
             if (encoding == Encoding::ASCII)
                 return {&ASCII_CHARS, 1};
-            #ifdef YSTRING_ENABLE_ISO_CHARS
+            #ifdef YCONVERT_ENABLE_ISO_CHARS
             if ((unsigned(encoding) & unsigned(Encoding::ISO_8859_1)) != 0)
                 return getIsoCodePageRanges(encoding);
             #endif
-            #ifdef YSTRING_ENABLE_MAC_CHARS
+            #ifdef YCONVERT_ENABLE_MAC_CHARS
             if ((unsigned(encoding) & unsigned(Encoding::MAC_CYRILLIC)) != 0)
                 return getIsoCodePageRanges(encoding);
             #endif
-            #ifdef YSTRING_ENABLE_DOS_CHARS
+            #ifdef YCONVERT_ENABLE_DOS_CHARS
             if ((unsigned(encoding) & unsigned(Encoding::DOS_CP437)) != 0)
                 return getIsoCodePageRanges(encoding);
             #endif
-            #ifdef YSTRING_ENABLE_WIN_CHARS
+            #ifdef YCONVERT_ENABLE_WIN_CHARS
             if ((unsigned(encoding) & unsigned(Encoding::WIN_CP1250)) != 0)
                 return getIsoCodePageRanges(encoding);
             #endif

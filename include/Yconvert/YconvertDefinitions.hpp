@@ -23,11 +23,11 @@
     // The issue is instead solved by having separate debug and release
     // versions of the DLL and LIB files.
     #pragma warning(disable: 4251 4275)
-    #ifdef YSTRING_EXPORTS
-        #define YSTRING_API __declspec(dllexport)
+    #ifdef YCONVERT_EXPORTS
+        #define YCONVERT_API __declspec(dllexport)
     #else
-        #define YSTRING_API __declspec(dllimport)
-        #ifndef YSTRING_NO_AUTO_IMPORT
+        #define YCONVERT_API __declspec(dllimport)
+        #ifndef YCONVERT_NO_AUTO_IMPORT
             #ifdef _DEBUG
                 #pragma comment (lib, "Yconvert.debug.lib")
             #else
@@ -36,7 +36,7 @@
         #endif
     #endif
 #else
-    #define YSTRING_API
+    #define YCONVERT_API
 #endif
 
 /// @endcond

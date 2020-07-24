@@ -17,7 +17,7 @@ namespace Yconvert
         UNKNOWN,
         BIG,
         LITTLE,
-        #ifdef YSTRING_BIG_ENDIAN
+        #ifdef YCONVERT_BIG_ENDIAN
         NATIVE = BIG
         #else
         NATIVE = LITTLE

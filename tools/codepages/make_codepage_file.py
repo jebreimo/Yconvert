@@ -146,7 +146,7 @@ def main(args):
     lines = []
     for key in arrays:
         lines.append("")
-        lines.append(f"#ifdef YSTRING_ENABLE_{key}_CHARS")
+        lines.append(f"#ifdef YCONVERT_ENABLE_{key}_CHARS")
         for arr_lines in arrays[key][0]:
             lines.append("")
             lines.extend(arr_lines)

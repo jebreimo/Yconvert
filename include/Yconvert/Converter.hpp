@@ -26,7 +26,7 @@ namespace Yconvert
 
     /** @brief Converts strings from one encoding to another.
       */
-    class YSTRING_API Converter
+    class YCONVERT_API Converter
     {
     public:
         /** @brief Constructs a converter from @a sourceEncoding to
