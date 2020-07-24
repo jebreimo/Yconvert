@@ -37,6 +37,12 @@ TEST_CASE("Determine encoding from first character")
     testDetermineEncoding(nullptr, 0, Encoding::UNKNOWN);
 }
 
+TEST_CASE("Ambiguous UTF-8")
+{
+    // Adding this test because I'm not sure I want this to succeed.
+    testDetermineEncoding("Q\xC0", 2, Encoding::UTF_8);
+}
+
 TEST_CASE("Determine encoding from BOM")
 {
     testDetermineEncoding("\xFE\xFFQWER", 6, Encoding::UTF_16_BE, 2);

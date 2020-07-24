@@ -22,7 +22,7 @@ namespace Yconvert
             {
                 char32_t ch = upper | ranges[i].startCodePoint;
                 for (size_t j = 0; j <= ranges[i].length; ++j)
-                    m_Chars[ranges[i].startIndex + i] = ch++;
+                    m_Chars[ranges[i].startIndex + j] = ch++;
                 upper = 0;
             }
             else

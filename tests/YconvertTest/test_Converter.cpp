@@ -49,3 +49,26 @@ TEST_CASE("Test UTF-16BE -> UTF-16LE")
     REQUIRE(n == t.size() * 2);
     REQUIRE(t[1] == LE(0xD900));
 }
+
+TEST_CASE("Test UTF-16 -> iso8859-1")
+{
+    Converter converter(Encoding::UTF_16_NATIVE, Encoding::ISO_8859_1);
+    std::u16string s(u"AäöØõ");
+    REQUIRE(converter.getEncodedSize(s.data(), s.size() * 2) == 6);
+    std::string t;
+    auto n = converter.convert(s.data(), s.size() * 2, t);
+    REQUIRE(n == s.size() * 2);
+    REQUIRE(t == "A\xE4\xF6?\xD8\xF5");
+}
+
+TEST_CASE("iso8859-1 -> UTF-16")
+{
+    Converter converter(Encoding::ISO_8859_1, Encoding::UTF_16_NATIVE);
+    std::string s("A\xE4\xF6?\xD8\xF5");
+    REQUIRE(converter.getEncodedSize(s.data(), s.size()) == 12);
+    std::u16string t(6, u'\0');
+    auto [m, n] = converter.convert(s.data(), s.size(), t.data(), t.size() * 2);
+    REQUIRE(m == s.size());
+    REQUIRE(n == t.size() * 2);
+    REQUIRE(t == u"Aäö?Øõ");
+}

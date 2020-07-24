@@ -77,7 +77,7 @@ namespace Yconvert
         {
         default:
             break;
-        case ErrorHandlingPolicy::SKIP:
+        case ErrorPolicy::SKIP:
             return std::count_if(src, src + srcSize,
                                  [this](auto c)
                                  {return findChar(m_Ranges, c).has_value();});
@@ -97,22 +97,38 @@ namespace Yconvert
             {
                 *cdst++ = *c;
             }
-            else if (errorHandlingPolicy() == ErrorHandlingPolicy::REPLACE)
+            else if (errorHandlingPolicy() == ErrorPolicy::REPLACE)
             {
                 *cdst++ = *findChar(m_Ranges, replacementCharacter());
             }
-            else if (errorHandlingPolicy() == ErrorHandlingPolicy::THROW)
+            else if (errorHandlingPolicy() == ErrorPolicy::THROW)
             {
                 throw ConversionException(
                     "Encoding does not support the character.", i);
             }
         }
-        return std::pair<size_t, size_t>();
+        return {size, size};
     }
 
     size_t CodePageEncoder::encode(const char32_t* src, size_t srcSize,
                                    std::string& dst)
     {
-        return 0;
+        for (size_t i = 0; i < srcSize; ++i)
+        {
+            if (auto c = findChar(m_Ranges, src[i]))
+            {
+                dst.push_back(*c);
+            }
+            else if (errorHandlingPolicy() == ErrorPolicy::REPLACE)
+            {
+                dst.push_back(*findChar(m_Ranges, replacementCharacter()));
+            }
+            else if (errorHandlingPolicy() == ErrorPolicy::THROW)
+            {
+                throw ConversionException(
+                    "Encoding does not support the character.", i);
+            }
+        }
+        return srcSize;
     }
 }

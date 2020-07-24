@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <string>
 #include "Yconvert/Encoding.hpp"
-#include "Yconvert/ErrorHandlingPolicy.hpp"
+#include "Yconvert/ErrorPolicy.hpp"
 
 namespace Yconvert
 {
@@ -22,9 +22,9 @@ namespace Yconvert
         Encoding encoding() const;
 
         [[nodiscard]]
-        ErrorHandlingPolicy errorHandlingPolicy() const;
+        ErrorPolicy errorHandlingPolicy() const;
 
-        void setErrorHandlingPolicy(ErrorHandlingPolicy value);
+        void setErrorHandlingPolicy(ErrorPolicy value);
 
         std::pair<size_t, size_t>
         decode(const void* src, size_t srcSize,
@@ -40,6 +40,6 @@ namespace Yconvert
                  char32_t* dst, size_t dstSize) const = 0;
     private:
         Encoding m_Encoding;
-        ErrorHandlingPolicy m_ErrorHandlingPolicy;
+        ErrorPolicy m_ErrorHandlingPolicy;
     };
 }

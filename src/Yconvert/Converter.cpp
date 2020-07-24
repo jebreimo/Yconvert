@@ -154,13 +154,13 @@ namespace Yconvert
         m_Buffer.resize(value);
     }
 
-    void Converter::setErrorHandlingPolicy(ErrorHandlingPolicy value)
+    void Converter::setErrorHandlingPolicy(ErrorPolicy value)
     {
         m_Decoder->setErrorHandlingPolicy(value);
         m_Encoder->setErrorHandlingPolicy(value);
     }
 
-    ErrorHandlingPolicy Converter::errorHandlingPolicy() const
+    ErrorPolicy Converter::errorHandlingPolicy() const
     {
         return m_Decoder->errorHandlingPolicy();
     }

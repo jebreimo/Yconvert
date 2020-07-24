@@ -24,12 +24,12 @@ namespace Yconvert
         return m_Encoding;
     }
 
-    ErrorHandlingPolicy EncoderBase::errorHandlingPolicy() const
+    ErrorPolicy EncoderBase::errorHandlingPolicy() const
     {
         return m_ErrorHandlingPolicy;
     }
 
-    void EncoderBase::setErrorHandlingPolicy(ErrorHandlingPolicy value)
+    void EncoderBase::setErrorHandlingPolicy(ErrorPolicy value)
     {
         m_ErrorHandlingPolicy = value;
     }

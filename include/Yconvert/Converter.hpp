@@ -12,7 +12,7 @@
 #include <vector>
 #include "Encoding.hpp"
 #include "YconvertDefinitions.hpp"
-#include "ErrorHandlingPolicy.hpp"
+#include "ErrorPolicy.hpp"
 
 /** @file
   * @brief Defines the Converter class.
@@ -68,12 +68,12 @@ namespace Yconvert
           *     and encoder at once.
           */
         [[nodiscard]]
-        ErrorHandlingPolicy errorHandlingPolicy() const;
+        ErrorPolicy errorHandlingPolicy() const;
 
         /** @brief Sets the error handling policies for both the decoder
           *     and encoder at once.
           */
-        void setErrorHandlingPolicy(ErrorHandlingPolicy value);
+        void setErrorHandlingPolicy(ErrorPolicy value);
 
         /** @brief Returns the replacement character used by the decoder.
           *

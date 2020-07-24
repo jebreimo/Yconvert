@@ -23,14 +23,14 @@ TEST_CASE("Test Utf8Decoder")
     }
     SECTION("Skip")
     {
-        decoder.setErrorHandlingPolicy(Yconvert::ErrorHandlingPolicy::SKIP);
+        decoder.setErrorHandlingPolicy(Yconvert::ErrorPolicy::SKIP);
         REQUIRE(decoder.decode(s.data(), s.size(), u.data(), u.size())
                 == std::pair<size_t, size_t>(9, 5));
         REQUIRE(u == std::vector<char32_t>{'A', U'Æ', U'Ω', ' ', 'F', 0});
     }
     SECTION("Throw")
     {
-        decoder.setErrorHandlingPolicy(Yconvert::ErrorHandlingPolicy::THROW);
+        decoder.setErrorHandlingPolicy(Yconvert::ErrorPolicy::THROW);
         REQUIRE_THROWS(decoder.decode(s.data(), s.size(), u.data(), u.size()));
     }
 }

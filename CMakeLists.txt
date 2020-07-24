@@ -15,7 +15,7 @@ add_library(Yconvert
     include/Yconvert/Converter.hpp
     include/Yconvert/ConversionException.hpp
     include/Yconvert/Encoding.hpp
-    include/Yconvert/ErrorHandlingPolicy.hpp
+    include/Yconvert/ErrorPolicy.hpp
     include/Yconvert/YconvertDefinitions.hpp
     include/Yconvert/YconvertException.hpp
     src/Yconvert/CodePageDecoder.cpp

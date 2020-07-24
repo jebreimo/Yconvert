@@ -9,7 +9,7 @@
 
 #include <string>
 #include "Yconvert/Encoding.hpp"
-#include "Yconvert/ErrorHandlingPolicy.hpp"
+#include "Yconvert/ErrorPolicy.hpp"
 
 namespace Yconvert
 {
@@ -22,9 +22,9 @@ namespace Yconvert
         Encoding encoding() const;
 
         [[nodiscard]]
-        ErrorHandlingPolicy errorHandlingPolicy() const;
+        ErrorPolicy errorHandlingPolicy() const;
 
-        void setErrorHandlingPolicy(ErrorHandlingPolicy value);
+        void setErrorHandlingPolicy(ErrorPolicy value);
 
         [[nodiscard]]
         virtual char32_t replacementCharacter() const;
@@ -44,7 +44,7 @@ namespace Yconvert
         explicit EncoderBase(Encoding encoding);
     private:
         Encoding m_Encoding;
-        ErrorHandlingPolicy m_ErrorHandlingPolicy;
+        ErrorPolicy m_ErrorHandlingPolicy;
         char32_t m_ReplacementCharacter;
     };
 }

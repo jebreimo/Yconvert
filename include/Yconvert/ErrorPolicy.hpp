@@ -16,7 +16,7 @@ namespace Yconvert
 {
     /** @brief The available error handling policies for encoding conversion.
       */
-    enum class ErrorHandlingPolicy
+    enum class ErrorPolicy
     {
         /** @brief Replace invalid characters with a replacement character.
           */

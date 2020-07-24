@@ -22,12 +22,12 @@ namespace Yconvert
         return m_Encoding;
     }
 
-    ErrorHandlingPolicy DecoderBase::errorHandlingPolicy() const
+    ErrorPolicy DecoderBase::errorHandlingPolicy() const
     {
         return m_ErrorHandlingPolicy;
     }
 
-    void DecoderBase::setErrorHandlingPolicy(ErrorHandlingPolicy value)
+    void DecoderBase::setErrorHandlingPolicy(ErrorPolicy value)
     {
         m_ErrorHandlingPolicy = value;
     }
@@ -49,13 +49,13 @@ namespace Yconvert
 
             switch (m_ErrorHandlingPolicy)
             {
-            case ErrorHandlingPolicy::REPLACE:
+            case ErrorPolicy::REPLACE:
                 dst[iDst++] = REPLACEMENT_CHARACTER;
                 iSrc += skipCharacter(cSrc + iSrc, srcSize - iSrc);
                 break;
-            case ErrorHandlingPolicy::THROW:
+            case ErrorPolicy::THROW:
                 throw ConversionException("Invalid character in input.", iDst);
-            case ErrorHandlingPolicy::SKIP:
+            case ErrorPolicy::SKIP:
                 iSrc += skipCharacter(cSrc, srcSize);
                 break;
             }
