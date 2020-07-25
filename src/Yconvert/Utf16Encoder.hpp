@@ -40,7 +40,6 @@ namespace Yconvert
         template <bool SwapBytes, typename T>
         size_t encodeUtf16(char32_t codePoint, T* data, size_t n)
         {
-            using CharType = typename std::decay<decltype(*data)>::type;
             if (codePoint <= 0xFFFF)
             {
                 if (n < 2)

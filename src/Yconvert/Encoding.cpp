@@ -30,7 +30,7 @@ namespace Yconvert
                  4, 1, Endianness::BIG},
                 {Encoding::ASCII, "ASCII", "",
                  1, 1, Endianness::UNKNOWN},
-            #ifdef YCONVERT_ENABLE_ISO_CHARS
+            #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
                 {Encoding::ISO_8859_1, "ISO-8859-1", "",
                  1, 1, Endianness::UNKNOWN},
                 {Encoding::ISO_8859_2, "ISO-8859-2", "",
@@ -62,7 +62,7 @@ namespace Yconvert
                 {Encoding::ISO_8859_16, "ISO-8859-16", "",
                  1, 1, Endianness::UNKNOWN},
             #endif
-            #ifdef YCONVERT_ENABLE_MAC_CHARS
+            #ifdef YCONVERT_ENABLE_MAC_CODE_PAGES
                 {Encoding::MAC_CYRILLIC, "MAC-CYRILLIC", "",
                  1, 1, Endianness::UNKNOWN},
                 {Encoding::MAC_GREEK, "MAC-GREEK", "",
@@ -76,7 +76,7 @@ namespace Yconvert
                 {Encoding::MAC_TURKISH, "MAC-TURKISH", "",
                  1, 1, Endianness::UNKNOWN},
             #endif
-            #ifdef YCONVERT_ENABLE_DOS_CHARS
+            #ifdef YCONVERT_ENABLE_DOS_CODE_PAGES
                 {Encoding::DOS_CP437, "DOS-CP437", "",
                  1, 1, Endianness::UNKNOWN},
                 {Encoding::DOS_CP737, "DOS-CP737", "",
@@ -110,7 +110,7 @@ namespace Yconvert
                 {Encoding::DOS_CP874, "DOS-CP874", "",
                  1, 1, Endianness::UNKNOWN},
             #endif
-            #ifdef YCONVERT_ENABLE_WIN_CHARS
+            #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
                 {Encoding::WIN_CP1250, "WIN-CP1250", "",
                  1, 1, Endianness::UNKNOWN},
                 {Encoding::WIN_CP1251, "WIN-CP1251", "",
@@ -137,7 +137,7 @@ namespace Yconvert
         static EncodingName ENCODING_ALIASES[] = {
             EncodingName("UTF-16", Encoding::UTF_16_NATIVE),
             EncodingName("UTF-32", Encoding::UTF_32_NATIVE),
-            #ifdef YCONVERT_ENABLE_WIN_CHARS
+            #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
             EncodingName("WINDOWS-1250", Encoding::WIN_CP1250),
             EncodingName("WINDOWS-1251", Encoding::WIN_CP1251),
             EncodingName("WINDOWS-1252", Encoding::WIN_CP1252),
@@ -148,7 +148,7 @@ namespace Yconvert
             EncodingName("WINDOWS-1257", Encoding::WIN_CP1257),
             EncodingName("WINDOWS-1258", Encoding::WIN_CP1258),
             #endif
-            #ifdef YCONVERT_ENABLE_ISO_CHARS
+            #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
             EncodingName("LATIN1", Encoding::ISO_8859_1),
             EncodingName("LATIN2", Encoding::ISO_8859_2),
             EncodingName("LATIN3", Encoding::ISO_8859_3),
@@ -316,7 +316,7 @@ namespace Yconvert
         return {enc, 0};
     }
 
-    Encoding Yconvert::determineEncoding(std::istream& stream)
+    Encoding determineEncoding(std::istream& stream)
     {
         auto startPos = stream.tellg();
         char buf[4];

@@ -27,7 +27,7 @@ add_executable(YconvertTest
     test_Utf16Decoder.cpp
     test_Utf16Encoder.cpp
     test_Utf32Encoder.cpp
-    test_Utf32Decoder.cpp test_Encoding.cpp)
+    test_Utf32Decoder.cpp test_Encoding.cpp test_Convert.cpp)
 
 target_link_libraries(YconvertTest
     PRIVATE

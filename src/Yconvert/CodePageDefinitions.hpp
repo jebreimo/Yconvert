@@ -19,8 +19,7 @@ namespace Yconvert
         uint8_t length;
     };
 
-
-    #ifdef YCONVERT_ENABLE_ISO_CHARS
+    #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
 
     constexpr CodePageRange ISO_8859_1_CHARS[] = {
         {0x0000,   0, 255}
@@ -285,7 +284,7 @@ namespace Yconvert
 
     #endif
 
-    #ifdef YCONVERT_ENABLE_MAC_CHARS
+    #ifdef YCONVERT_ENABLE_MAC_CODE_PAGES
 
     constexpr CodePageRange MAC_CYRILLIC_CHARS[] = {
         {0x0000,   0, 127}, {0x00A0, 202,   0}, {0x00A2, 162,   1},
@@ -532,7 +531,7 @@ namespace Yconvert
 
     #endif
 
-    #ifdef YCONVERT_ENABLE_DOS_CHARS
+    #ifdef YCONVERT_ENABLE_DOS_CODE_PAGES
 
     constexpr CodePageRange DOS_CP437_CHARS[] = {
         {0x0000,   0, 127}, {0x00A0, 255,   0}, {0x00A1, 173,   0},
@@ -1171,7 +1170,7 @@ namespace Yconvert
 
     #endif
 
-    #ifdef YCONVERT_ENABLE_WIN_CHARS
+    #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
 
     constexpr CodePageRange WIN_CP1250_CHARS[] = {
         {0x0000,   0, 127}, {0x00A0, 160,   0}, {0x00A4, 164,   0},

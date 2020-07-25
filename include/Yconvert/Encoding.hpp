@@ -24,7 +24,7 @@ namespace Yconvert
         ASCII,
         UTF_16_NATIVE = IsLittleEndian ? UTF_16_LE : UTF_16_BE,
         UTF_32_NATIVE = IsLittleEndian ? UTF_32_LE : UTF_32_BE,
-    #ifdef YCONVERT_ENABLE_ISO_CHARS
+    #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
         ISO_8859_1 = 128,
         ISO_8859_2,
         ISO_8859_3,
@@ -41,7 +41,7 @@ namespace Yconvert
         ISO_8859_15,
         ISO_8859_16,
     #endif
-    #ifdef YCONVERT_ENABLE_MAC_CHARS
+    #ifdef YCONVERT_ENABLE_MAC_CODE_PAGES
         MAC_CYRILLIC = 256,
         MAC_GREEK,
         MAC_ICELAND,
@@ -49,7 +49,7 @@ namespace Yconvert
         MAC_ROMAN,
         MAC_TURKISH,
     #endif
-    #ifdef YCONVERT_ENABLE_DOS_CHARS
+    #ifdef YCONVERT_ENABLE_DOS_CODE_PAGES
         DOS_CP437 = 512,
         DOS_CP737,
         DOS_CP775,
@@ -67,7 +67,7 @@ namespace Yconvert
         DOS_CP869,
         DOS_CP874,
     #endif
-    #ifdef YCONVERT_ENABLE_WIN_CHARS
+    #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
         WIN_CP1250 = 1024,
         WIN_CP1251,
         WIN_CP1252,

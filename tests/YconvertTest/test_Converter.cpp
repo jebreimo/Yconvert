@@ -11,7 +11,7 @@
 
 using namespace Yconvert;
 
-TEST_CASE("Test UTF-8 -> UTF-8")
+TEST_CASE("Converter with UTF-8 -> UTF-8")
 {
     Converter converter(Encoding::UTF_8, Encoding::UTF_8);
     std::string s(u8"AäöØ∂ƒ‹‘");
@@ -23,7 +23,7 @@ TEST_CASE("Test UTF-8 -> UTF-8")
     REQUIRE(t == s);
 }
 
-TEST_CASE("Test UTF-16 -> UTF-8")
+TEST_CASE("Converter with UTF-16 -> UTF-8")
 {
     Converter converter(Encoding::UTF_16_NATIVE, Encoding::UTF_8);
     std::u16string s(u"AäöØ∂ƒ‹‘");
@@ -35,7 +35,7 @@ TEST_CASE("Test UTF-16 -> UTF-8")
     REQUIRE(t == u8"AäöØ∂ƒ‹‘");
 }
 
-TEST_CASE("Test UTF-16BE -> UTF-16LE")
+TEST_CASE("Converter with UTF-16BE -> UTF-16LE")
 {
     auto BE = [](uint16_t c){return getBigEndian(c);};
     auto LE = [](uint16_t c) {return getLittleEndian(c);};
@@ -50,7 +50,7 @@ TEST_CASE("Test UTF-16BE -> UTF-16LE")
     REQUIRE(t[1] == LE(0xD900));
 }
 
-TEST_CASE("Test UTF-16 -> iso8859-1")
+TEST_CASE("Converter with UTF-16 -> iso8859-1")
 {
     Converter converter(Encoding::UTF_16_NATIVE, Encoding::ISO_8859_1);
     std::u16string s(u"AäöØõ");
@@ -61,7 +61,7 @@ TEST_CASE("Test UTF-16 -> iso8859-1")
     REQUIRE(t == "A\xE4\xF6?\xD8\xF5");
 }
 
-TEST_CASE("iso8859-1 -> UTF-16")
+TEST_CASE("Converter with iso8859-1 -> UTF-16")
 {
     Converter converter(Encoding::ISO_8859_1, Encoding::UTF_16_NATIVE);
     std::string s("A\xE4\xF6?\xD8\xF5");
