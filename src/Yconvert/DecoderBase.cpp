@@ -9,7 +9,6 @@
 
 #include "Yconvert/ConversionException.hpp"
 
-
 namespace Yconvert
 {
     DecoderBase::DecoderBase(Encoding encoding)

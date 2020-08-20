@@ -7,6 +7,8 @@
 //****************************************************************************
 #include "Yconvert/Converter.hpp"
 
+#include <cassert>
+#include <cstring>
 #include <vector>
 #include "Yconvert/ConversionException.hpp"
 #include "CodePageDecoder.hpp"
@@ -25,6 +27,18 @@ namespace Yconvert
     {
         const size_t DEFAULT_BUFFER_SIZE = 256;
 
+        size_t findNthCodePoint(DecoderBase& decoder,
+                                const char* src, size_t srcSize,
+                                std::vector<char32_t>& buf, size_t n)
+        {
+            assert(buf.size() >= n);
+            if (n == 0)
+                return 0;
+            auto& info = getEncodingInfo(decoder.encoding());
+            if (info.maxUnits == 1)
+                return n * info.unitSize;
+            return decoder.decode(src, srcSize, buf.data(), n).first;
+        }
 
         inline std::pair<const CodePageRange*, size_t>
         getCodePageRanges(Encoding encoding)
@@ -187,7 +201,7 @@ namespace Yconvert
 
     size_t Converter::getEncodedSize(const void* src, size_t srcSize)
     {
-        if (m_ConversionType != CONVERT)
+        if (m_ConversionType != ConversionType::CONVERT)
             return srcSize;
         const auto& dec = getEncodingInfo(m_Decoder->encoding());
         const auto& enc = getEncodingInfo(m_Encoder->encoding());
@@ -212,20 +226,22 @@ namespace Yconvert
     {
         switch (m_ConversionType)
         {
-        case SWAP_ENDIANNESS:
+        case ConversionType::SWAP_ENDIANNESS:
             {
                 auto oldSize = dst.size();
                 dst.resize(oldSize + srcSize);
                 return copyAndSwap(src, srcSize, dst.data() + oldSize, srcSize);
             }
-        case COPY:
+        case ConversionType::COPY:
             {
                 auto oldSize = dst.size();
                 dst.resize(oldSize + srcSize);
                 return copy(src, srcSize, dst.data() + oldSize, srcSize);
             }
-        case CONVERT:
+        case ConversionType::CONVERT:
             return doConvert(src, srcSize, dst);
+        default:
+            return 0;
         }
     }
 
@@ -234,18 +250,20 @@ namespace Yconvert
     {
         switch (m_ConversionType)
         {
-        case SWAP_ENDIANNESS:
+        case ConversionType::SWAP_ENDIANNESS:
         {
             auto n = copyAndSwap(src, srcSize, dst, dstSize);
             return {n, n};
         }
-        case COPY:
+        case ConversionType::COPY:
         {
             auto n = copy(src, srcSize, dst, dstSize);
             return {n, n};
         }
-        case CONVERT:
+        case ConversionType::CONVERT:
             return doConvert(src, srcSize, dst, dstSize);
+        default:
+            return {0, 0};
         }
     }
 
@@ -253,15 +271,15 @@ namespace Yconvert
             Encoding src, Encoding dst)
     {
         if (src == dst)
-            return COPY;
+            return ConversionType::COPY;
         if ((src == Encoding::UTF_16_LE && dst == Encoding::UTF_16_BE)
             || (src == Encoding::UTF_16_BE && dst == Encoding::UTF_16_LE)
             || (src == Encoding::UTF_32_LE && dst == Encoding::UTF_32_BE)
             || (src == Encoding::UTF_32_BE && dst == Encoding::UTF_32_LE))
         {
-            return SWAP_ENDIANNESS;
+            return ConversionType::SWAP_ENDIANNESS;
         }
-        return CONVERT;
+        return ConversionType::CONVERT;
     }
 
     size_t Converter::copy(const void* src, size_t srcSize, void* dst, size_t dstSize)
@@ -282,19 +300,6 @@ namespace Yconvert
         else if (unitSize == 4)
             return endianCopy<4>(src, srcSize, dst, dstSize);
         return 0;
-    }
-
-    size_t findNthCodePoint(DecoderBase& decoder,
-                            const char* src, size_t srcSize,
-                            std::vector<char32_t>& buf, size_t n)
-    {
-        assert(buf.size() >= n);
-        if (n == 0)
-            return 0;
-        auto& info = getEncodingInfo(decoder.encoding());
-        if (info.maxUnits == 1)
-            return n * info.unitSize;
-        return decoder.decode(src, srcSize, buf.data(), n).first;
     }
 
     size_t Converter::doConvert(const void* src, size_t srcSize,

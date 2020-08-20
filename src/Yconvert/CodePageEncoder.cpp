@@ -7,6 +7,7 @@
 //****************************************************************************
 #include "CodePageEncoder.hpp"
 
+#include <algorithm>
 #include <optional>
 #include "Yconvert/ConversionException.hpp"
 

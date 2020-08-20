@@ -109,7 +109,7 @@ namespace Yconvert
         std::pair<size_t, size_t> convert(const void* src, size_t srcSize,
                                           void* dst, size_t dstSize);
     private:
-        enum ConversionType
+        enum class ConversionType
         {
             CONVERT,
             COPY,

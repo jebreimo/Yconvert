@@ -41,6 +41,12 @@ namespace Yconvert
                 return INVALID_CHAR;
             }
 
+            if (n > std::distance(it, end))
+            {
+                --it;
+                return INVALID_CHAR;
+            }
+
             for (int i = 0; i < n; ++i)
             {
                 result <<= 6u;
