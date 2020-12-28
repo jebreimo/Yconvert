@@ -27,6 +27,8 @@ option(YCONVERT_MAC_CODE_PAGES "Enable Mac code pages" OFF)
 option(YCONVERT_BUILD_TESTS "Build tests" ${YCONVERT_MASTER_PROJECT})
 option(YCONVERT_INSTALL "Generate the install target" ${YCONVERT_MASTER_PROJECT})
 
+include(GNUInstallDirs)
+
 function(yconvert_target_enable_all_warnings target)
     target_compile_options(${target}
         PRIVATE
@@ -73,7 +75,7 @@ add_library(Yconvert
 
 target_include_directories(Yconvert BEFORE
     PUBLIC
-        $<INSTALL_INTERFACE:include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     PRIVATE
@@ -104,8 +106,6 @@ export(TARGETS Yconvert
     FILE YconvertConfig.cmake)
 
 if (YCONVERT_INSTALL)
-    include(GNUInstallDirs)
-
     install(TARGETS Yconvert
         EXPORT YconvertConfig
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
