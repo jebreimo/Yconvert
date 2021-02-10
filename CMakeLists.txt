@@ -5,8 +5,8 @@
 ## This file is distributed under the Simplified BSD License.
 ## License text is included with the source distribution.
 ##****************************************************************************
-cmake_minimum_required(VERSION 3.13)
-project(Yconvert VERSION 0.1.0)
+cmake_minimum_required(VERSION 3.16)
+project(Yconvert VERSION 0.1.1)
 
 set(CMAKE_CXX_STANDARD 17)
 

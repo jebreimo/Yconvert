@@ -184,8 +184,10 @@ namespace Yconvert
 
     Encoding encodingFromName(std::string name)
     {
-        std::transform(name.begin(), name.end(), name.begin(),
-                       [](auto c){return 'a' <= c && c <= 'z' ? c - 32 : c;});
+        std::transform(name.begin(), name.end(), name.begin(), [](auto c)
+        {
+            return 'a' <= c && c <= 'z' ? char(c - 32) : c;
+        });
         using std::begin;
         using std::end;
         auto it = std::find_if(begin(ENCODING_INFO), end(ENCODING_INFO),
@@ -266,9 +268,7 @@ namespace Yconvert
 
         if ((1u << len) - 1 == nonZeroPattern)
         {
-            if (nonAsciiPattern == 0)
-                return Encoding::ASCII;
-            if (isValidUtf8Char(str, len))
+            if (nonAsciiPattern == 0 || isValidUtf8Char(str, len))
                 return Encoding::UTF_8;
             return Encoding::UNKNOWN;
         }

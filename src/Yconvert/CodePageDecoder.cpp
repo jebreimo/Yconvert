@@ -32,7 +32,7 @@ namespace Yconvert
         }
     }
 
-    size_t CodePageDecoder::skipCharacter(const void* src, size_t srcSize) const
+    size_t CodePageDecoder::skipCharacter(const void* /*src*/, size_t srcSize) const
     {
         return srcSize ? 1 : 0;
     }

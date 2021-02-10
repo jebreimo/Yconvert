@@ -10,6 +10,13 @@
 #include <array>
 #include "Yconvert/Encoding.hpp"
 
+#if defined(YCONVERT_ENABLE_ISO_CODE_PAGES) \
+    || defined(YCONVERT_ENABLE_MAC_CODE_PAGES) \
+    || defined(YCONVERT_ENABLE_DOS_CODE_PAGES) \
+    || defined(YCONVERT_ENABLE_WIN_CODE_PAGES)
+    #define YCONVERT_ENABLE_CODE_PAGES
+#endif
+
 namespace Yconvert
 {
     struct CodePageRange
