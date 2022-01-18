@@ -148,8 +148,40 @@ namespace Yconvert
     }
 
     /**
+     * @brief Converts the string @a source with @a converter
+     *  and returns the result.
+     *
+     * The first template parameter is the result's string type and must be
+     * specified explicitly.
+     */
+    template <typename StringT, typename CharT>
+    StringT convertTo(std::basic_string_view<CharT> source,
+                      Converter& converter)
+    {
+        StringT result;
+        convertString<CharT, typename StringT::value_type>(source, result,
+                                                           converter);
+        return result;
+    }
+
+    /**
+     * @brief Converts the string @a source with @a converter
+     *  and returns the result.
+     *
+     * The first template parameter is the result's string type and must be
+     * specified explicitly.
+     */
+    template <typename StringT, typename CharT>
+    StringT convertTo(const std::basic_string<CharT>& source,
+                      Converter& converter)
+    {
+        return convertTo<StringT>(std::basic_string_view<CharT>(source),
+                                  converter);
+    }
+
+    /**
      * @brief Converts the string @a source from @a sourceEncoding
-     *  to @a destinationEncoding and returns the result to @a destination.
+     *  to @a destinationEncoding and returns the result.
      *
      * The first template parameter is the result's string type and must be
      * specified explicitly.
@@ -166,6 +198,13 @@ namespace Yconvert
         return result;
     }
 
+    /**
+     * @brief Converts the string @a source from @a sourceEncoding
+     *  to @a destinationEncoding and returns the result.
+     *
+     * The first template parameter is the result's string type and must be
+     * specified explicitly.
+     */
     template <typename StringT, typename CharT>
     StringT convertTo(const std::basic_string<CharT>& source,
                       Encoding sourceEncoding,

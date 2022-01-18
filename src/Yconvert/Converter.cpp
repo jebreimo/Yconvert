@@ -338,7 +338,6 @@ namespace Yconvert
     size_t Converter::doConvert(const void* src, size_t srcSize,
                                 std::string& dst)
     {
-
         if (m_Buffer.empty())
             m_Buffer.resize(DEFAULT_BUFFER_SIZE);
 
