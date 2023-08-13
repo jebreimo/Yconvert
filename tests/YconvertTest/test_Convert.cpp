@@ -14,19 +14,20 @@ using namespace Yconvert;
 TEST_CASE("Convert ISO 8859-10 -> UTF-8")
 {
     std::string s = "AB\xE7\xF1";
-    REQUIRE(convertTo<std::string>(s, Encoding::ISO_8859_10, Encoding::UTF_8) == u8"ABįņ");
+    REQUIRE(convert_to<std::string>(s, Encoding::ISO_8859_10, Encoding::UTF_8) == u8"ABįņ");
 }
 
 TEST_CASE("Convert ISO 8859-10 -> UTF-16")
 {
     std::string s = "AB\xE7\xF1";
-    REQUIRE(convertTo<std::u16string>(s, Encoding::ISO_8859_10, Encoding::UTF_16_NATIVE) == u"ABįņ");
+    REQUIRE(convert_to<std::u16string>(s, Encoding::ISO_8859_10, Encoding::UTF_16_NATIVE) == u"ABįņ");
 }
 
 TEST_CASE("Convert UTF-32 -> UTF-16")
 {
     std::u32string s = U"ABįņ";
-    REQUIRE(convertTo<std::u16string>(s, Encoding::UTF_32_NATIVE, Encoding::UTF_16_NATIVE) == u"ABįņ");
+    REQUIRE(
+        convert_to<std::u16string>(s, Encoding::UTF_32_NATIVE, Encoding::UTF_16_NATIVE) == u"ABįņ");
 }
 
 TEST_CASE("Convert long wstring")
@@ -59,5 +60,5 @@ TEST_CASE("Convert long wstring")
                     u8" Usoldet jord fra linja)Property(Name = F.01_Merknad, Value = Omfatter også nødvendig"
                     u8" utsortering av stubber, røtter, kvist og stein/klumper med tykkelse 50-100mm. All"
                     u8" tilbakeføring skal skje med beltegående maskin.)Property(Name = G.01_Vertikalnivå, Value = 1)";
-    REQUIRE(convertTo<std::string>(w, Encoding::WSTRING_NATIVE, Encoding::UTF_8) == s);
+    REQUIRE(convert_to<std::string>(w, Encoding::WSTRING_NATIVE, Encoding::UTF_8) == s);
 }
