@@ -130,6 +130,8 @@ if (YCONVERT_INSTALL)
             ${CMAKE_INSTALL_INCLUDEDIR}/Yconvert
     )
 
+    include(CMakePackageConfigHelpers)
+
     write_basic_package_version_file(YconvertConfigVersion.cmake
         COMPATIBILITY SameMajorVersion
         )
