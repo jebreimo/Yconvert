@@ -59,7 +59,6 @@ namespace Yconvert
                     if (dst_size < bytes_written)
                         return {i, bytes_written - 4};
                     Detail::add_bytes<SWAP_BYTES>(src[i], cdst);
-                    cdst += 4;
                 }
             }
             return {src_size, bytes_written};
