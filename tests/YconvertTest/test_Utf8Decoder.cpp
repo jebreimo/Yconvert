@@ -6,12 +6,12 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Yconvert/Utf8Decoder.hpp"
-
-#include <catch2/catch.hpp>
+#include "U8Adapter.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("Test Utf8Decoder")
 {
-    std::string s(u8"AÆΩ" "\xE0\x80 F");
+    std::string s(U8("AÆΩ" "\xE0\x80 F"));
     Yconvert::Utf8Decoder decoder;
     std::vector<char32_t> u(6);
     SECTION("Replace")

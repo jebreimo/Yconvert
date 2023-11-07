@@ -7,7 +7,8 @@
 //****************************************************************************
 #include "Yconvert/Utf16Decoder.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_vector.hpp>
 
 TEST_CASE("Test UTF-16-BE decoder")
 {
@@ -16,5 +17,5 @@ TEST_CASE("Test UTF-16-BE decoder")
     std::vector<char32_t> u(7);
     auto [m, n] = decoder.decode(s.data(), s.size(), u.data(), u.size());
     REQUIRE(m == 14);
-    REQUIRE_THAT(u, Catch::Equals(std::vector<char32_t>{'A', 'B', 'C', 'D', 'E', 'F', 'G'}));
+    REQUIRE_THAT(u, Catch::Matchers::Equals(std::vector<char32_t>{'A', 'B', 'C', 'D', 'E', 'F', 'G'}));
 }

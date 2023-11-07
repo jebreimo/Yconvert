@@ -6,15 +6,15 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Yconvert/Converter.hpp"
-
-#include <catch2/catch.hpp>
+#include "U8Adapter.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 using namespace Yconvert;
 
 TEST_CASE("Converter with UTF-8 -> UTF-8")
 {
     Converter converter(Encoding::UTF_8, Encoding::UTF_8);
-    std::string s(u8"AäöØ∂ƒ‹‘");
+    std::string s(U8("AäöØ∂ƒ‹‘"));
     REQUIRE(converter.get_encoded_size(s.data(), s.size()) == 21);
     std::string t(21, '\0');
     auto [m, n] = converter.convert(s.data(), s.size(), t.data(), t.size());
@@ -32,7 +32,7 @@ TEST_CASE("Converter with UTF-16 -> UTF-8")
     auto[m, n] = converter.convert(s.data(), s.size() * 2, t.data(), t.size());
     REQUIRE(m == s.size() * 2);
     REQUIRE(n == 21);
-    REQUIRE(t == u8"AäöØ∂ƒ‹‘");
+    REQUIRE(t == U8("AäöØ∂ƒ‹‘"));
 }
 
 TEST_CASE("Converter with UTF-16BE -> UTF-16LE")

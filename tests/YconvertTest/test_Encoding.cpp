@@ -6,7 +6,8 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Yconvert/Encoding.hpp"
-#include <catch2/catch.hpp>
+#include "U8Adapter.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 using namespace Yconvert;
 
@@ -24,7 +25,7 @@ void test_determine_encoding(const char* s, size_t len,
 TEST_CASE("Determine encoding from first character")
 {
     test_determine_encoding("(abc)", 5, Encoding::UTF_8);
-    test_determine_encoding(u8"Å", 2, Encoding::UTF_8);
+    test_determine_encoding(U8("Å"), 2, Encoding::UTF_8);
     test_determine_encoding("\0(\xAA\xAA", 4, Encoding::UTF_16_BE);
     test_determine_encoding("\xAA\0", 2, Encoding::UTF_16_LE);
     test_determine_encoding("\0\0\xAA\0", 4, Encoding::UTF_32_BE);
