@@ -60,6 +60,8 @@ add_library(Yconvert
     src/Yconvert/EncoderBase.hpp
     src/Yconvert/EncoderBase.cpp
     src/Yconvert/Encoding.cpp
+    src/Yconvert/MakeEncodersAndDecoders.cpp
+    src/Yconvert/MakeEncodersAndDecoders.hpp
     src/Yconvert/Utf8Decoder.cpp
     src/Yconvert/Utf8Decoder.hpp
     src/Yconvert/Utf8Encoder.cpp
@@ -71,7 +73,7 @@ add_library(Yconvert
     src/Yconvert/CodePageEncoder.cpp
     src/Yconvert/CodePageEncoder.hpp
     src/Yconvert/YconvertThrow.hpp
-    )
+)
 
 target_include_directories(Yconvert BEFORE
     PUBLIC
