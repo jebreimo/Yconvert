@@ -136,7 +136,7 @@ namespace Yconvert
 
         typedef std::pair<std::string, Encoding> EncodingName;
 
-        static EncodingName ENCODING_ALIASES[] = {
+        EncodingName ENCODING_ALIASES[] = {
             EncodingName("UTF-16", Encoding::UTF_16_NATIVE),
             EncodingName("UTF-32", Encoding::UTF_32_NATIVE),
             #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
