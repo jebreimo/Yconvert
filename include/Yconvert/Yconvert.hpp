@@ -9,4 +9,5 @@
 
 #include "ConversionException.hpp"
 #include "Convert.hpp"
+#include "EncodingChecker.hpp"
 #include "YconvertVersion.hpp"

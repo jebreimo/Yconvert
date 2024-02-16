@@ -19,68 +19,71 @@
 
 namespace Yconvert
 {
-#ifdef YCONVERT_ENABLE_CODE_PAGES
-
-    inline std::pair<const CodePageRange*, size_t>
-    get_code_page_ranges(Encoding encoding)
+    namespace
     {
-        static const CodePageRange ASCII_CHARS = {0x0000, 0, 127};
-        if (encoding == Encoding::ASCII)
-            return {&ASCII_CHARS, 1};
-        #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
-        if ((unsigned(encoding) & unsigned(Encoding::ISO_8859_1)) != 0)
-            return get_iso_code_page_ranges(encoding);
-        #endif
-        #ifdef YCONVERT_ENABLE_MAC_CODE_PAGES
-        if ((unsigned(encoding) & unsigned(Encoding::MAC_CYRILLIC)) != 0)
+    #ifdef YCONVERT_ENABLE_CODE_PAGES
+
+        inline std::pair<const CodePageRange*, size_t>
+        get_code_page_ranges(Encoding encoding)
+        {
+            static const CodePageRange ASCII_CHARS = {0x0000, 0, 127};
+            if (encoding == Encoding::ASCII)
+                return {&ASCII_CHARS, 1};
+            #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
+            if ((unsigned(encoding) & unsigned(Encoding::ISO_8859_1)) != 0)
                 return get_iso_code_page_ranges(encoding);
-        #endif
-        #ifdef YCONVERT_ENABLE_DOS_CODE_PAGES
-        if ((unsigned(encoding) & unsigned(Encoding::DOS_CP437)) != 0)
-            return get_iso_code_page_ranges(encoding);
-        #endif
-        #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
-        if ((unsigned(encoding) & unsigned(Encoding::WIN_CP1250)) != 0)
-            return get_iso_code_page_ranges(encoding);
-        #endif
-        return {nullptr, 0};
-    }
-
-    std::unique_ptr<DecoderBase> make_code_page_decoder(Encoding encoding)
-    {
-        auto [ranges, ranges_size] = get_code_page_ranges(encoding);
-        if (ranges)
-        {
-            return std::unique_ptr<DecoderBase>(new CodePageDecoder(
-                encoding, ranges, ranges_size));
+            #endif
+            #ifdef YCONVERT_ENABLE_MAC_CODE_PAGES
+            if ((unsigned(encoding) & unsigned(Encoding::MAC_CYRILLIC)) != 0)
+                    return get_iso_code_page_ranges(encoding);
+            #endif
+            #ifdef YCONVERT_ENABLE_DOS_CODE_PAGES
+            if ((unsigned(encoding) & unsigned(Encoding::DOS_CP437)) != 0)
+                return get_iso_code_page_ranges(encoding);
+            #endif
+            #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
+            if ((unsigned(encoding) & unsigned(Encoding::WIN_CP1250)) != 0)
+                return get_iso_code_page_ranges(encoding);
+            #endif
+            return {nullptr, 0};
         }
-        return {};
-    }
 
-    std::unique_ptr<EncoderBase> make_code_page_encoder(Encoding encoding)
-    {
-        auto [ranges, ranges_size] = get_code_page_ranges(encoding);
-        if (ranges)
+        std::unique_ptr<DecoderBase> make_code_page_decoder(Encoding encoding)
         {
-            return std::unique_ptr<EncoderBase>(new CodePageEncoder(
-                encoding, ranges, ranges_size));
+            auto [ranges, ranges_size] = get_code_page_ranges(encoding);
+            if (ranges)
+            {
+                return std::unique_ptr<DecoderBase>(new CodePageDecoder(
+                    encoding, ranges, ranges_size));
+            }
+            return {};
         }
-        return {};
+
+        std::unique_ptr<EncoderBase> make_code_page_encoder(Encoding encoding)
+        {
+            auto [ranges, ranges_size] = get_code_page_ranges(encoding);
+            if (ranges)
+            {
+                return std::unique_ptr<EncoderBase>(new CodePageEncoder(
+                    encoding, ranges, ranges_size));
+            }
+            return {};
+        }
+
+    #else
+
+        std::unique_ptr<DecoderBase> make_code_page_decoder(Encoding)
+        {
+            return {};
+        }
+
+        std::unique_ptr<EncoderBase> make_code_page_encoder(Encoding)
+        {
+            return {};
+        }
+
+    #endif
     }
-
-#else
-
-    std::unique_ptr<DecoderBase> make_code_page_decoder(Encoding)
-    {
-        return {};
-    }
-
-    std::unique_ptr<EncoderBase> make_code_page_encoder(Encoding)
-    {
-        return {};
-    }
-
-#endif
 
     std::unique_ptr<DecoderBase> make_decoder(Encoding encoding)
     {

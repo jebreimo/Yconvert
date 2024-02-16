@@ -46,6 +46,7 @@ add_library(Yconvert
     include/Yconvert/Converter.hpp
     include/Yconvert/ConversionException.hpp
     include/Yconvert/Encoding.hpp
+    include/Yconvert/EncodingChecker.hpp
     include/Yconvert/ErrorPolicy.hpp
     include/Yconvert/Yconvert.hpp
     include/Yconvert/YconvertDefinitions.hpp
@@ -60,6 +61,7 @@ add_library(Yconvert
     src/Yconvert/EncoderBase.hpp
     src/Yconvert/EncoderBase.cpp
     src/Yconvert/Encoding.cpp
+    src/Yconvert/EncodingChecker.cpp
     src/Yconvert/MakeEncodersAndDecoders.cpp
     src/Yconvert/MakeEncodersAndDecoders.hpp
     src/Yconvert/Utf8Decoder.cpp
