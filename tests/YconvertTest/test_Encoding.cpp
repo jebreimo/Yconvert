@@ -41,7 +41,9 @@ TEST_CASE("Determine encoding from first character")
 
 TEST_CASE("Ambiguous UTF-8")
 {
-    // Adding this test because I'm not sure if I want this to succeed.
+    // Adding this test to highlight a potential issue: is an incomplete
+    // sequence of bytes that looks like it could be UTF-8 actually UTF-8?
+    // I'm not sure if I want this to succeed.
     test_determine_encoding("Q\xC0", 2, Encoding::UTF_8);
 }
 
@@ -50,4 +52,34 @@ TEST_CASE("Determine encoding from BOM")
     test_determine_encoding("\xFE\xFFQWER", 6, Encoding::UTF_16_BE, 2);
     test_determine_encoding("\xFF\xFE\0\0QWER", 8, Encoding::UTF_32_LE, 4);
     test_determine_encoding("\xEF\xBB\xBFQWER", 7, Encoding::UTF_8, 3);
+}
+
+TEST_CASE("Count valid code points in an invalid UTF-16BE string")
+{
+    char u16be[] = "\0A\0B\xD8\x00\xDC\x00\xD8\x00\0A";
+    auto [cp, bytes] = Yconvert::count_valid_codepoints(
+        u16be, sizeof(u16be) - 1, Encoding::UTF_16_BE);
+    REQUIRE(cp == 3);
+    REQUIRE(bytes == 8);
+    REQUIRE(!Yconvert::check_encoding(u16be, sizeof(u16be) - 1, Encoding::UTF_16_BE));
+}
+
+TEST_CASE("Count valid code points in a valid UTF-16LE string")
+{
+    char u16le[] = "Q\0R\0S\0\x00\xD8\x00\xDCT\0";
+    auto [cp, bytes] = Yconvert::count_valid_codepoints(
+        u16le, sizeof(u16le) - 1, Encoding::UTF_16_LE);
+    REQUIRE(cp == 5);
+    REQUIRE(bytes == sizeof(u16le) - 1);
+    REQUIRE(Yconvert::check_encoding(u16le, sizeof(u16le) - 1, Encoding::UTF_16_LE));
+}
+
+TEST_CASE("Count valid code points in an invalid UTF-8 string")
+{
+    char u8[] = "Q\xC3\xA5R\xF0\x9F\x98\x80S\xE2\x98T";
+    auto [cp, bytes] = Yconvert::count_valid_codepoints(
+        u8, sizeof(u8) - 1, Encoding::UTF_8);
+    REQUIRE(cp == 5);
+    REQUIRE(bytes == 9);
+    REQUIRE(!Yconvert::check_encoding(u8, sizeof(u8) - 1, Encoding::UTF_8));
 }

@@ -123,4 +123,21 @@ namespace Yconvert
         }
         return {size_t(c_src - initial_src), size_t(dst - initial_dst)};
     }
+
+    std::pair<size_t, size_t>
+    Utf8Decoder::count_valid_codepoints(const void* src, size_t src_size) const
+    {
+        auto c_src = static_cast<const char*>(src);
+        auto initial_src = c_src;
+        auto src_end = c_src + src_size;
+        size_t valid_codepoints = 0;
+        while (true)
+        {
+            auto value = Detail::next_utf8_value(c_src, src_end);
+            if (value == INVALID_CHAR)
+                break;
+            ++valid_codepoints;
+        }
+        return {valid_codepoints, size_t(c_src - initial_src)};
+    }
 }

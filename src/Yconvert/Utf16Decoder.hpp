@@ -108,6 +108,23 @@ namespace Yconvert
             }
             return {size_t(csrc - initial_src), size_t(dst - initial_dst)};
         }
+
+        std::pair<size_t, size_t>
+        count_valid_codepoints(const void* src, size_t src_size) const override
+        {
+            auto c_src = static_cast<const char*>(src);
+            auto initial_src = c_src;
+            auto src_end = c_src + src_size;
+            size_t valid_codepoints = 0;
+            while (true)
+            {
+                auto value = Detail::next_utf16_code_point<SWAP_BYTES>(c_src, src_end);
+                if (value == INVALID_CHAR)
+                    break;
+                ++valid_codepoints;
+            }
+            return {valid_codepoints, size_t(c_src - initial_src)};
+        }
     };
 
     using Utf16BEDecoder = Utf16Decoder<IS_LITTLE_ENDIAN>;

@@ -26,9 +26,22 @@ namespace Yconvert
 
         void set_error_policy(ErrorPolicy policy);
 
+        /**
+         * @brief Decodes a sequence of bytes.
+         *
+         * @param src The input sequence.
+         * @param src_size The number of bytes in the input sequence.
+         * @param dst The output buffer.
+         * @param dst_size The size of the output buffer.
+         * @return The number of bytes read from the input sequence and the
+         *     number of characters written to the output buffer.
+         */
         std::pair<size_t, size_t>
         decode(const void* src, size_t src_size,
                char32_t* dst, size_t dst_size) const;
+
+        virtual std::pair<size_t, size_t>
+        count_valid_codepoints(const void* src, size_t src_size) const = 0;
     protected:
         explicit DecoderBase(Encoding encoding);
 

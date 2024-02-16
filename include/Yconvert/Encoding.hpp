@@ -149,4 +149,31 @@ namespace Yconvert
      *  does not necessarily support seekg.
      */
     YCONVERT_API Encoding determine_encoding(std::istream& stream);
+
+    /**
+     * @brief Returns the number of valid code points in @a buffer.
+     * @param buffer an encoded string
+     * @param length the length of the buffer
+     * @param encoding the string's encoding
+     * @return first is the number of valid code points, second is the number of
+     *  bytes that were read.
+     *
+     *  If the number of bytes that were read is less than @a length, it means
+     *  that the buffer contains invalid code points.
+     */
+    [[nodiscard]]
+    YCONVERT_API std::pair<size_t, size_t>
+    count_valid_codepoints(const void* buffer, size_t length,
+                           Encoding encoding);
+
+    /**
+     * @brief Checks if a string contains only valid code points in a given encoding.
+     * @param buffer an encoded string
+     * @param length the length of the buffer
+     * @param encoding the string's encoding
+     * @return true if the buffer contains only valid code points.
+     */
+    [[nodiscard]]
+    YCONVERT_API bool check_encoding(const void* buffer, size_t length,
+                                     Encoding encoding);
 }

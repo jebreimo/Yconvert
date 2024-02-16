@@ -333,4 +333,16 @@ namespace Yconvert
         }
         return enc;
     }
+
+    std::pair<size_t, size_t>
+    count_valid_codepoints(const void* buffer, size_t length, Encoding encoding)
+    {
+        auto decoder = make_decoder(encoding);
+        return decoder->count_valid_codepoints(buffer, length);
+    }
+
+    bool check_encoding(const void* buffer, size_t length, Encoding encoding)
+    {
+        return count_valid_codepoints(buffer, length, encoding).second == length;
+    }
 }

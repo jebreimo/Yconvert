@@ -20,5 +20,8 @@ namespace Yconvert
         std::pair<size_t, size_t>
         do_decode(const void* src, size_t src_size,
                   char32_t* dst, size_t dst_size) const final;
+
+        std::pair<size_t, size_t>
+        count_valid_codepoints(const void *src, size_t src_size) const override;
     };
 }
