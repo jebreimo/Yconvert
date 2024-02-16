@@ -78,6 +78,7 @@ namespace Yconvert
         {
         default:
             break;
+        case ErrorPolicy::IGNORE:
         case ErrorPolicy::SKIP:
             return std::count_if(src, src + src_size,
                                  [this](auto c)
