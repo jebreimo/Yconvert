@@ -18,14 +18,24 @@ namespace Yconvert
       */
     enum class ErrorPolicy
     {
-        /** @brief Replace invalid characters with a replacement character.
-          */
+        /**
+         * @brief Replace invalid characters with a replacement character.
+         */
         REPLACE,
-        /** @brief Throw an exception if an invalid character is encountered.
-          */
+        /**
+         * @brief Throw an exception if an invalid character is encountered.
+         */
         THROW,
-        /** @brief Skip invalid characters as if they don't exist.
-          */
-        SKIP
+        /**
+         * @brief Skip invalid characters as if they don't exist.
+         */
+        SKIP,
+        /**
+         * @brief Assume there are no invalid characters.
+         * This only works if the source and destination encodings are the same,
+         * or sufficiently similar (i.e. big endian and little endian versions
+         * of the same encoding). `SKIP` is used ff they are not similar enough.
+         */
+        IGNORE
     };
 }

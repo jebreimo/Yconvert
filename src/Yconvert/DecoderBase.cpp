@@ -55,6 +55,7 @@ namespace Yconvert
             case ErrorPolicy::THROW:
                 throw ConversionException("Invalid character in input.", i_dst);
             case ErrorPolicy::SKIP:
+            case ErrorPolicy::IGNORE:
                 i_src += skip_character(bytes, src_size);
                 break;
             }

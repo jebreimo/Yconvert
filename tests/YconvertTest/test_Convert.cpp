@@ -62,3 +62,13 @@ TEST_CASE("Convert long wstring")
                        " tilbakeføring skal skje med beltegående maskin.)Property(Name = G.01_Vertikalnivå, Value = 1)");
     REQUIRE(convert_to<std::string>(w, Encoding::WSTRING_NATIVE, Encoding::UTF_8) == s);
 }
+
+TEST_CASE("Use convert to repair an invalid UTF-8 string")
+{
+    const char u8[] = "Q\xC3\xA5R\xF0\x9F\x98\x80S\xE2\x98T";
+    auto result = convert_to<std::string>(std::string_view(u8),
+                                          Encoding::UTF_8,
+                                          Encoding::UTF_8,
+                                          ErrorPolicy::REPLACE);
+    REQUIRE(result == "Q\xC3\xA5R\xF0\x9F\x98\x80S\xEF\xBF\xBDT");
+}

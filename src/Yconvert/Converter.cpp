@@ -140,7 +140,10 @@ namespace Yconvert
     size_t Converter::convert(const void* src, size_t src_size,
                               std::string& dst)
     {
-        switch (conversion_type_)
+        auto conversion_type = error_policy() == ErrorPolicy::IGNORE
+            ? conversion_type_
+            : ConversionType::CONVERT;
+        switch (conversion_type)
         {
         case ConversionType::SWAP_ENDIANNESS:
             {
@@ -166,7 +169,10 @@ namespace Yconvert
     Converter::convert(const void* src, size_t src_size,
                        void* dst, size_t dst_size)
     {
-        switch (conversion_type_)
+        auto conversion_type = error_policy() == ErrorPolicy::IGNORE
+                               ? conversion_type_
+                               : ConversionType::CONVERT;
+        switch (conversion_type)
         {
         case ConversionType::SWAP_ENDIANNESS:
         {
