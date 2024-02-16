@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <istream>
+#include "YconvertThrow.hpp"
 
 namespace Yconvert
 {
@@ -323,7 +324,12 @@ namespace Yconvert
         stream.read(buf, 4);
         auto [enc, offset] = determine_encoding(buf, stream.gcount());
         if (offset != 4)
-            stream.seekg(start_pos + std::streamsize(offset), std::ios::beg);
+        {
+            auto pos = start_pos + std::streamsize(offset);
+            stream.seekg(pos, std::ios::beg);
+            if (stream.fail())
+                YCONVERT_THROW("Unable to set position of stream.");
+        }
         return enc;
     }
 }
