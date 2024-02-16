@@ -11,6 +11,12 @@
 
 using namespace Yconvert;
 
+TEST_CASE("Convert empty UTF-8 to UTF-32")
+{
+    std::string_view s;
+    REQUIRE(convert_to<std::u32string>(s, Encoding::UTF_8, Encoding::UTF_32_NATIVE).empty());
+}
+
 TEST_CASE("Convert ISO 8859-10 -> UTF-8")
 {
     std::string s = "AB\xE7\xF1";
