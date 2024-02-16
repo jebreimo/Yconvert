@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <istream>
+#include "MakeEncodersAndDecoders.hpp"
 #include "YconvertThrow.hpp"
 
 namespace Yconvert
