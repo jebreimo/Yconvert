@@ -100,44 +100,53 @@ namespace Yconvert
     [[nodiscard]]
     YCONVERT_API std::pair<const EncodingInfo*, size_t> get_supported_encodings();
 
-    /** @brief Returns the @a Encoding that corresponds to @a name.
-      */
+    /**
+     * @brief Returns the @a Encoding that corresponds to @a name.
+     */
     YCONVERT_API Encoding encoding_from_name(std::string name);
 
-    /** @brief Checks the list of known byte-order marks and returns the one
-      *     that matches the start of @a bom.
-      */
+    /**
+     * @brief Checks the list of known byte-order marks and returns the one
+     *  that matches the start of @a bom.
+     */
     [[nodiscard]]
     YCONVERT_API Encoding determine_encoding_from_byte_order_mark(
         const char* str, size_t len);
 
 
-    /** @brief Analyzes the contents of @a str and returns what it believes is
-      *     most likely to @a str's encoding.
-      */
+    /**
+     * @brief Analyzes the contents of @a str and returns what it believes is
+     *  most likely to @a str's encoding.
+     */
     [[nodiscard]]
     YCONVERT_API Encoding determine_encoding_from_first_character(
         const char* str, size_t len);
 
-    /** @brief Returns the encoding used in @a stream and the offset the
-      *     first character following the byte-order mark.
-      *
-      * The function first tries to determine the encoding based on
-      * @a buffer's byte-order mark. If there isn't one, the contents of the
-      * buffer is analyzed instead.
-      */
+    /**
+     * @brief Returns the encoding used in @a stream and the offset the
+     *  first character following the byte-order mark.
+     *
+     * The function first tries to determine the encoding based on
+     * @a buffer's byte-order mark. If there isn't one, the contents of the
+     * buffer is analyzed instead.
+     */
     [[nodiscard]]
     YCONVERT_API std::pair<Encoding, size_t> determine_encoding(
         const char* buffer, size_t length);
 
-    /** @brief Returns the encoding used in @a stream.
-      *
-      * Will look for a byte-order mark (bom) at the start of a stream. If one
-      * is found it returns the corresponding encoding and leaves the stream at
-      * the first byte after the bom. If one isn't found, it will read
-      * @a maxScanLength number of bytes, do some basic analysis and try to
-      * guess the encoding, and then reposition the stream back to its
-      * original position.
-      */
+    /**
+     * @brief Returns the encoding used in @a stream.
+     *
+     * Will look for a byte-order mark (bom) at the start of a stream. If one
+     * is found it returns the corresponding encoding and leaves the stream at
+     * the first byte after the bom. If one isn't found, it will read
+     * @a maxScanLength number of bytes, do some basic analysis and try to
+     * guess the encoding, and then reposition the stream back to its
+     * original position.
+     *
+     * @throw YconvertException if it was not possible to to set the position
+     *  indicator of @a stream with std::ios::seekg. std::cin, for instance,
+     *  does not necessarily support seekg.
+     */
     YCONVERT_API Encoding determine_encoding(std::istream& stream);
 }
