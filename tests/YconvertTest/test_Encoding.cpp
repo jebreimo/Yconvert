@@ -83,3 +83,23 @@ TEST_CASE("Count valid code points in an invalid UTF-8 string")
     REQUIRE(bytes == 9);
     REQUIRE(!Yconvert::check_encoding(u8, sizeof(u8) - 1, Encoding::UTF_8));
 }
+
+TEST_CASE("Count valid code points in an invalid ASCII string")
+{
+    char ascii[] = "ABCDEFGHIJ\x80";
+    auto [cp, bytes] = Yconvert::count_valid_codepoints(
+        ascii, sizeof(ascii), Encoding::ASCII);
+    REQUIRE(cp == 10);
+    REQUIRE(bytes == 10);
+    REQUIRE(!Yconvert::check_encoding(ascii, sizeof(ascii), Encoding::ASCII));
+}
+
+TEST_CASE("Count valid code points in a zero-terminated ASCII string")
+{
+    char ascii[] = "ABCDEFGHIJ\0KL";
+    auto [cp, bytes] = Yconvert::count_valid_codepoints(
+        ascii, sizeof(ascii), Encoding::ASCII);
+    REQUIRE(cp == 10);
+    REQUIRE(bytes == 10);
+    REQUIRE(!Yconvert::check_encoding(ascii, sizeof(ascii), Encoding::ASCII));
+}

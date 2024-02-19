@@ -49,8 +49,14 @@ namespace Yconvert
     }
 
     std::pair<size_t, size_t>
-    CodePageDecoder::count_valid_codepoints(const void*, size_t src_size) const
+    CodePageDecoder::count_valid_codepoints(const void* src, size_t src_size) const
     {
+        auto csrc = static_cast<const uint8_t*>(src);
+        for (size_t i = 0; i < src_size; ++i)
+        {
+            if (chars_[csrc[i]] == INVALID_CHAR || chars_[csrc[i]] == 0)
+                return {i, i};
+        }
         return {src_size, src_size};
     }
 }

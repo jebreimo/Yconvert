@@ -23,10 +23,11 @@ namespace Yconvert
     {
     #ifdef YCONVERT_ENABLE_CODE_PAGES
 
+        constexpr CodePageRange ASCII_CHARS = {0x0000, 0, 127};
+
         inline std::pair<const CodePageRange*, size_t>
         get_code_page_ranges(Encoding encoding)
         {
-            static const CodePageRange ASCII_CHARS = {0x0000, 0, 127};
             if (encoding == Encoding::ASCII)
                 return {&ASCII_CHARS, 1};
             #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
