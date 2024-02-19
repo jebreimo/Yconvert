@@ -61,6 +61,14 @@ namespace Yconvert
     {
         if (!decoder_)
             return false;
-        return count_valid_codepoints(buffer, length).second == length;
+        auto bytes = count_valid_codepoints(buffer, length).second;
+        if (bytes == length)
+            return true;
+
+        char32_t chr;
+        auto count = decoder_->decode(
+            static_cast<const char*>(buffer) + bytes,
+            length - bytes, &chr, 1).second;
+        return count == 1 && chr == 0;
     }
 }

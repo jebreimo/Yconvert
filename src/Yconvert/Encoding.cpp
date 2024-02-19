@@ -9,7 +9,7 @@
 
 #include <algorithm>
 #include <istream>
-#include "MakeEncodersAndDecoders.hpp"
+#include "Yconvert/EncodingChecker.hpp"
 #include "YconvertThrow.hpp"
 
 namespace Yconvert
@@ -337,8 +337,8 @@ namespace Yconvert
     std::pair<size_t, size_t>
     count_valid_codepoints(const void* buffer, size_t length, Encoding encoding)
     {
-        auto decoder = make_decoder(encoding);
-        return decoder->count_valid_codepoints(buffer, length);
+        EncodingChecker checker(encoding);
+        return checker.count_valid_codepoints(buffer, length);
     }
 
     bool check_encoding(const void* buffer, size_t length, Encoding encoding)

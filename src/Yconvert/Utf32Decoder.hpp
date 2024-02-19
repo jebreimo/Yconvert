@@ -96,12 +96,12 @@ namespace Yconvert
             size_t valid_codepoints = 0;
             while (true)
             {
+                auto prev_src = c_src;
                 auto value = Detail::next_utf32_code_point<SWAP_BYTES>(c_src, src_end);
-                if (value == INVALID_CHAR)
-                    break;
+                if (value == INVALID_CHAR || value == 0)
+                    return {valid_codepoints, size_t(prev_src - initial_src)};
                 ++valid_codepoints;
             }
-            return {valid_codepoints, size_t(c_src - initial_src)};
         }
     };
 
