@@ -91,7 +91,7 @@ TEST_CASE("Count valid code points in a zero-terminated UTF-8 string.")
         u8, sizeof(u8), Encoding::UTF_8);
     REQUIRE(cp == 10);
     REQUIRE(bytes == 10);
-    REQUIRE(!Yconvert::check_encoding(u8, sizeof(u8), Encoding::UTF_8));
+    REQUIRE(Yconvert::check_encoding(u8, sizeof(u8), Encoding::UTF_8));
 }
 
 TEST_CASE("Count valid code points in an invalid ASCII string")
@@ -111,7 +111,7 @@ TEST_CASE("Count valid code points in a zero-terminated ASCII string")
         ascii, sizeof(ascii), Encoding::ASCII);
     REQUIRE(cp == 10);
     REQUIRE(bytes == 10);
-    REQUIRE(!Yconvert::check_encoding(ascii, sizeof(ascii), Encoding::ASCII));
+    REQUIRE(Yconvert::check_encoding(ascii, sizeof(ascii), Encoding::ASCII));
 }
 
 TEST_CASE("Count valid code points in zero-terminated UTF32 string")
@@ -121,5 +121,5 @@ TEST_CASE("Count valid code points in zero-terminated UTF32 string")
         u32, sizeof(u32), Encoding::UTF_32_NATIVE);
     REQUIRE(cp == 10);
     REQUIRE(bytes == 40);
-    REQUIRE(!Yconvert::check_encoding(u32, sizeof(u32), Encoding::UTF_32_NATIVE));
+    REQUIRE(Yconvert::check_encoding(u32, sizeof(u32), Encoding::UTF_32_NATIVE));
 }

@@ -337,12 +337,11 @@ namespace Yconvert
     std::pair<size_t, size_t>
     count_valid_codepoints(const void* buffer, size_t length, Encoding encoding)
     {
-        EncodingChecker checker(encoding);
-        return checker.count_valid_codepoints(buffer, length);
+        return EncodingChecker(encoding).count_valid_codepoints(buffer, length);
     }
 
     bool check_encoding(const void* buffer, size_t length, Encoding encoding)
     {
-        return count_valid_codepoints(buffer, length, encoding).second == length;
+        return EncodingChecker(encoding).check_encoding(buffer, length);
     }
 }
