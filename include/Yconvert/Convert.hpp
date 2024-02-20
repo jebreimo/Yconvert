@@ -6,10 +6,10 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-#include "Converter.hpp"
-#include "Encoding.hpp"
 #include <string>
 #include <string_view>
+#include "Converter.hpp"
+#include "Encoding.hpp"
 
 /** @file
   * @brief Defines functions that convert strings from one encoding
