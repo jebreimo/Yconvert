@@ -39,7 +39,7 @@ function(yconvert_target_enable_all_warnings target)
         )
 endfunction()
 
-configure_file(include/Yconvert/YconvertVersion.hpp.in YconvertVersion.hpp @ONLY)
+configure_file(src/Yconvert/YconvertVersion.hpp.in YconvertVersion.hpp @ONLY)
 
 add_library(Yconvert
     include/Yconvert/Convert.hpp
