@@ -163,6 +163,14 @@ namespace Yconvert
             EncodingName("LATIN10", Encoding::ISO_8859_16),
             #endif
         };
+
+        void to_upper_case(std::string &str)
+        {
+            std::transform(str.begin(), str.end(), str.begin(), [](char c)
+            {
+                return 'a' <= c && c <= 'z' ? char(c - 32) : c;
+            });
+        }
     }
 
     const EncodingInfo& get_encoding_info(Encoding encoding)
@@ -186,10 +194,7 @@ namespace Yconvert
 
     Encoding encoding_from_name(std::string name)
     {
-        std::transform(name.begin(), name.end(), name.begin(), [](auto c)
-        {
-            return 'a' <= c && c <= 'z' ? char(c - 32) : c;
-        });
+        to_upper_case(name);
         using std::begin;
         using std::end;
         auto it = std::find_if(begin(ENCODING_INFO), end(ENCODING_INFO),
