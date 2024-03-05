@@ -332,6 +332,7 @@ namespace Yconvert
         if (offset != 4)
         {
             auto pos = start_pos + std::streamsize(offset);
+            stream.clear();
             stream.seekg(pos, std::ios::beg);
             if (stream.fail())
                 YCONVERT_THROW("Unable to set position of stream.");
