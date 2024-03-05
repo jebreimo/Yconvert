@@ -6,6 +6,7 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
+#include <istream>
 #include <string>
 #include <string_view>
 #include "Converter.hpp"
@@ -215,5 +216,44 @@ namespace Yconvert
                                    source_encoding,
                                    result_encoding,
                                    error_policy);
+    }
+
+    template <typename StringT>
+    StringT convert_to(std::istream& source,
+                       Converter& converter)
+    {
+        StringT result;
+        std::vector<char> buffer(4096);
+        size_t source_offset = 0;
+        for (;;)
+        {
+            source.read(buffer.data() + source_offset, buffer.size() - source_offset);
+            auto n = source.gcount() + source_offset;
+            if (n == source_offset)
+                break;
+            auto result_offset = result.size();
+            auto byte_size = converter.get_encoded_size(
+                buffer.data(), n);
+            auto char_size = byte_size / sizeof(typename StringT::value_type);
+            result.resize(result_offset + char_size);
+            auto [a, b] = converter.convert(buffer.data(), n, result.data() + result_offset, byte_size);
+            if (a != n)
+            {
+                std::copy(buffer.begin() + a, buffer.end(), buffer.begin());
+                source_offset = buffer.size() - a;
+            }
+        }
+        return result;
+    }
+
+    template <typename StringT>
+    StringT convert_to(std::istream& stream,
+                       Encoding source_encoding,
+                       Encoding result_encoding,
+                       ErrorPolicy error_policy = ErrorPolicy::REPLACE)
+    {
+        Converter converter(source_encoding, result_encoding);
+        converter.set_error_policy(error_policy);
+        return convert_to<StringT>(stream, converter);
     }
 }

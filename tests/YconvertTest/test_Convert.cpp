@@ -6,8 +6,10 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Yconvert/Convert.hpp"
-#include "U8Adapter.hpp"
+
+#include <sstream>
 #include <catch2/catch_test_macros.hpp>
+#include "U8Adapter.hpp"
 
 using namespace Yconvert;
 
@@ -77,4 +79,12 @@ TEST_CASE("Use convert to repair an invalid UTF-8 string")
                                           Encoding::UTF_8,
                                           ErrorPolicy::REPLACE);
     REQUIRE(result == "Q\xC3\xA5R\xF0\x9F\x98\x80S\xEF\xBF\xBDT");
+}
+
+TEST_CASE("Convert UTF-16 stream to UTF-8 string")
+{
+    std::stringstream ss;
+    ss.write("\xFF\xFE""A\0""B\0", 6);
+    ss.seekg(0, std::ios::beg);
+    REQUIRE(convert_to<std::u8string>(ss, Encoding::UTF_16_LE, Encoding::UTF_8) == u8"\uFEFFAB");
 }
