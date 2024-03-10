@@ -26,7 +26,7 @@ namespace Yconvert
      * @returns The number of bytes read from source and the number of bytes
      *  written to destination.
      */
-    std::pair<size_t, size_t>
+    YCONVERT_API std::pair<size_t, size_t>
     convert_string(const void* source, size_t source_size,
                    void* destination, size_t destination_size,
                    Converter& converter);
@@ -38,7 +38,7 @@ namespace Yconvert
      * @returns The number of bytes read from source and the number of bytes
      *  written to destination.
      */
-    std::pair<size_t, size_t>
+    YCONVERT_API std::pair<size_t, size_t>
     convert_string(const void* source, size_t source_size,
                    Encoding source_encoding,
                    void* destination, size_t destination_size,
@@ -218,34 +218,51 @@ namespace Yconvert
                                    error_policy);
     }
 
+    /**
+     * @brief Reads the contents of @a source, converts it with @a converter
+     *  and returns the result.
+     */
     template <typename StringT>
     StringT convert_to(std::istream& source,
                        Converter& converter)
     {
         StringT result;
-        std::vector<char> buffer(4096);
+        std::vector<char> buffer(BUFFER_SIZE);
         size_t source_offset = 0;
         for (;;)
         {
-            source.read(buffer.data() + source_offset, buffer.size() - source_offset);
-            auto n = source.gcount() + source_offset;
-            if (n == source_offset)
+            source.read(buffer.data() + source_offset,
+                        std::streamsize(buffer.size() - source_offset));
+            auto bytes_read = source.gcount();
+            auto buf_size = bytes_read + source_offset;
+            if (buf_size == 0)
                 break;
+            bool src_is_final = source.eof();
             auto result_offset = result.size();
-            auto byte_size = converter.get_encoded_size(
-                buffer.data(), n);
-            auto char_size = byte_size / sizeof(typename StringT::value_type);
-            result.resize(result_offset + char_size);
-            auto [a, b] = converter.convert(buffer.data(), n, result.data() + result_offset, byte_size);
-            if (a != n)
+            auto enc_size = converter.get_encoded_size(buffer.data(), buf_size);
+            auto raw_size = enc_size / sizeof(typename StringT::value_type);
+            result.resize(result_offset + raw_size);
+            auto [src_siz, dst_siz] = converter.convert(buffer.data(), buf_size,
+                                                        result.data() + result_offset,
+                                                        enc_size, src_is_final);
+            if (src_siz != buf_size)
             {
-                std::copy(buffer.begin() + a, buffer.end(), buffer.begin());
-                source_offset = buffer.size() - a;
+                std::copy(buffer.begin() + src_siz, buffer.end(), buffer.begin());
+                source_offset = buffer.size() - src_siz;
             }
+            else
+            {
+                source_offset = 0;
+            }
+            result.resize(result_offset + dst_siz / sizeof(typename StringT::value_type));
         }
         return result;
     }
 
+    /**
+     * @brief Reads the contents of @a stream, converts it from
+     *  @a source_encoding to @a destination_encoding and returns the result.
+     */
     template <typename StringT>
     StringT convert_to(std::istream& stream,
                        Encoding source_encoding,

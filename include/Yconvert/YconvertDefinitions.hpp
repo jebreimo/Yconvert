@@ -50,4 +50,10 @@ namespace Yconvert
     /** @brief A value representing invalid code points.
       */
     constexpr char32_t INVALID_CHAR = 0xFFFFFFFFu;
+
+    #ifdef YCONVERT_BUFFER_SIZE
+    constexpr size_t BUFFER_SIZE = YCONVERT_BUFFER_SIZE;
+    #else
+    constexpr size_t BUFFER_SIZE = 4 * 1024;
+    #endif
 }

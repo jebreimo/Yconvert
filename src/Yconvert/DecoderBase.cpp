@@ -33,7 +33,8 @@ namespace Yconvert
 
     std::pair<size_t, size_t>
     DecoderBase::decode(const void* src, size_t src_size,
-                        char32_t* dst, size_t dst_size) const
+                        char32_t* dst, size_t dst_size,
+                        bool src_is_final) const
     {
         size_t i_src = 0, i_dst = 0;
         auto bytes = static_cast<const char*>(src);
@@ -46,17 +47,24 @@ namespace Yconvert
             if (i_src == src_size || i_dst == dst_size)
                 return {i_src, i_dst};
 
+            if (!src_is_final)
+            {
+                auto next = skip_codepoint(bytes + i_src, src_size - i_src);
+                if (i_src + next == src_size)
+                    return {i_src, i_dst};
+            }
+
             switch (error_policy_)
             {
             case ErrorPolicy::REPLACE:
                 dst[i_dst++] = REPLACEMENT_CHARACTER;
-                i_src += skip_character(bytes + i_src, src_size - i_src);
+                i_src += skip_codepoint(bytes + i_src, src_size - i_src);
                 break;
             case ErrorPolicy::THROW:
                 throw ConversionException("Invalid character in input.", i_dst);
             case ErrorPolicy::SKIP:
             case ErrorPolicy::IGNORE:
-                i_src += skip_character(bytes, src_size);
+                i_src += skip_codepoint(bytes, src_size);
                 break;
             }
         }

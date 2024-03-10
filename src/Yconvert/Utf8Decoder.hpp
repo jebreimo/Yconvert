@@ -15,7 +15,7 @@ namespace Yconvert
     public:
         Utf8Decoder();
     protected:
-        size_t skip_character(const void* src, size_t src_size) const final;
+        size_t skip_codepoint(const void* src, size_t src_size) const final;
 
         std::pair<size_t, size_t>
         do_decode(const void* src, size_t src_size,

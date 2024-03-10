@@ -12,8 +12,8 @@ namespace Yconvert
 {
     namespace Detail
     {
-        template <bool SWAP_BYTES, typename BiIt>
-        char32_t next_utf16_word(BiIt& it, BiIt end)
+        template <bool SWAP_BYTES, typename FwdIt>
+        char32_t next_utf16_word(FwdIt& it, FwdIt end)
         {
             if (it == end)
                 return INVALID_CHAR;
@@ -77,12 +77,13 @@ namespace Yconvert
     class Utf16Decoder : public DecoderBase
     {
     public:
-        Utf16Decoder() : DecoderBase(IS_BIG_ENDIAN == SWAP_BYTES
-                                     ? Encoding::UTF_16_LE
-                                     : Encoding::UTF_16_BE)
+        Utf16Decoder()
+            : DecoderBase(IS_BIG_ENDIAN == SWAP_BYTES
+                          ? Encoding::UTF_16_LE
+                          : Encoding::UTF_16_BE)
         {}
     protected:
-        size_t skip_character(const void* src, size_t src_size) const final
+        size_t skip_codepoint(const void* src, size_t src_size) const final
         {
             auto csrc = static_cast<const char*>(src);
             auto initial_src = csrc;

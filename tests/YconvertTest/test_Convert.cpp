@@ -81,10 +81,51 @@ TEST_CASE("Use convert to repair an invalid UTF-8 string")
     REQUIRE(result == "Q\xC3\xA5R\xF0\x9F\x98\x80S\xEF\xBF\xBDT");
 }
 
-TEST_CASE("Convert UTF-16 stream to UTF-8 string")
+TEST_CASE("Convert UTF-16 stream to a UTF-8 string")
 {
     std::stringstream ss;
     ss.write("\xFF\xFE""A\0""B\0", 6);
     ss.seekg(0, std::ios::beg);
-    REQUIRE(convert_to<std::u8string>(ss, Encoding::UTF_16_LE, Encoding::UTF_8) == u8"\uFEFFAB");
+    auto result = convert_to<std::u8string>(ss, Encoding::UTF_16_LE, Encoding::UTF_8);
+    REQUIRE(result == u8"\uFEFFAB");
+}
+
+TEST_CASE("Convert an invalid UTF-8 stream to a UTF-16 string")
+{
+    std::stringstream ss;
+    ss.write("ABC_\xE2\x9C_STU", 10);
+    ss.seekg(0, std::ios::beg);
+    auto result = convert_to<std::u16string>(ss, Encoding::UTF_8, Encoding::UTF_16_NATIVE);
+    REQUIRE(result == u"ABC_\uFFFD_STU");
+}
+
+TEST_CASE("Convert a multi-buffer UTF-16 stream to UTF-8")
+{
+    std::stringstream ss;
+    constexpr auto N = Yconvert::BUFFER_SIZE / 2 + 3;
+    for (size_t i = 0; i < N - 4; ++i)
+        ss.write("\0A", 2);
+    ss.write("\xD8\x00\xDC\x00", 4);
+    ss.seekg(0, std::ios::beg);
+    auto result = convert_to<std::string>(ss, Encoding::UTF_16_BE, Encoding::UTF_8);
+    REQUIRE(result.size() == N);
+    REQUIRE(result[N - 4] == '\xF0');
+    REQUIRE(result[N - 3] == '\x90');
+    REQUIRE(result[N - 2] == '\x80');
+    REQUIRE(result[N - 1] == '\x80');
+}
+
+TEST_CASE("Convert a UTF-16 stream ending on a incomplete surrogate pair to UTF-8")
+{
+    std::stringstream ss;
+    constexpr auto N = Yconvert::BUFFER_SIZE / 2 + 2;
+    for (size_t i = 0; i < N - 3; ++i)
+        ss.write("\0A", 2);
+    ss.write("\xD8\x00", 2);
+    ss.seekg(0, std::ios::beg);
+    auto result = convert_to<std::string>(ss, Encoding::UTF_16_BE, Encoding::UTF_8);
+    REQUIRE(result.size() == N);
+    REQUIRE(result[N - 3] == '\xEF');
+    REQUIRE(result[N - 2] == '\xBF');
+    REQUIRE(result[N - 1] == '\xBD');
 }

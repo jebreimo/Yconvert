@@ -77,8 +77,8 @@ namespace Yconvert
         return {src_size, bytes_written};
     }
 
-    size_t Utf8Encoder::encode(const char32_t* src, size_t src_size,
-                               std::string& dst)
+    void Utf8Encoder::encode(const char32_t* src, size_t src_size,
+                             std::string& dst)
     {
         auto out = back_inserter(dst);
         for (size_t i = 0; i < src_size; ++i)
@@ -86,6 +86,5 @@ namespace Yconvert
             auto n = Detail::get_utf8_encoded_length(src[i]);
             Detail::encode_utf8(src[i], n, out);
         }
-        return src_size;
     }
 }

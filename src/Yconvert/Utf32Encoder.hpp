@@ -64,8 +64,8 @@ namespace Yconvert
             return {src_size, bytes_written};
         }
 
-        size_t encode(const char32_t* src, size_t src_size,
-                      std::string& dst) override
+        void encode(const char32_t* src, size_t src_size,
+                    std::string& dst) override
         {
             auto out = back_inserter(dst);
             for (size_t i = 0; i < src_size; ++i)
@@ -73,7 +73,6 @@ namespace Yconvert
                 if (src[i] <= UNICODE_MAX)
                     Detail::add_bytes<SWAP_BYTES>(src[i], out);
             }
-            return src_size;
         }
     };
 

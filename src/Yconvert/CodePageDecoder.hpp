@@ -19,7 +19,7 @@ namespace Yconvert
                         const CodePageRange* ranges,
                         size_t ranges_size);
     protected:
-        size_t skip_character(const void* src, size_t src_size) const override;
+        size_t skip_codepoint(const void* src, size_t src_size) const override;
 
         std::pair<size_t, size_t>
         do_decode(const void* src, size_t src_size,

@@ -14,7 +14,7 @@ TEST_CASE("Test Utf8Encoder to string")
     std::u32string str32(U"AÆΩ F");
     Yconvert::Utf8Encoder encoder;
     std::string result;
-    REQUIRE(encoder.encode(str32.data(), str32.size(), result) == 5);
+    encoder.encode(str32.data(), str32.size(), result);
     REQUIRE(result == U8("AÆΩ F"));
 }
 

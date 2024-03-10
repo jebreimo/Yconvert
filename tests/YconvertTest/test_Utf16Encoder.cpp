@@ -14,7 +14,7 @@ void check_add_bytes_le(char32_t c, std::string_view expected)
 {
     std::string s;
     Utf16LEEncoder encoder;
-    REQUIRE(encoder.encode(&c, 1, s) == 1);
+    encoder.encode(&c, 1, s);
     REQUIRE(s == expected);
 }
 
@@ -22,7 +22,7 @@ void check_add_bytes_be(char32_t c, std::string_view expected)
 {
     std::string s;
     Utf16BEEncoder encoder;
-    REQUIRE(encoder.encode(&c, 1, s) == 1);
+    encoder.encode(&c, 1, s);
     REQUIRE(s == expected);
 }
 

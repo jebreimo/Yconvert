@@ -36,8 +36,8 @@ namespace Yconvert
         encode(const char32_t* src, size_t src_size,
                void* dst, size_t dst_size) override;
 
-        size_t encode(const char32_t* src, size_t src_size,
-                      std::string& dst) override;
+        void encode(const char32_t* src, size_t src_size,
+                    std::string& dst) override;
 
     private:
         std::vector<CodePointMapRange> ranges_;

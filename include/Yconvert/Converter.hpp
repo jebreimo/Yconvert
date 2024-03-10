@@ -20,7 +20,6 @@
 
 namespace Yconvert
 {
-
     class DecoderBase;
     class EncoderBase;
 
@@ -107,7 +106,8 @@ namespace Yconvert
                        std::string& dst);
 
         std::pair<size_t, size_t> convert(const void* src, size_t src_size,
-                                          void* dst, size_t dst_size);
+                                          void* dst, size_t dst_size,
+                                          bool src_is_final = true);
     private:
         enum class ConversionType
         {
@@ -123,7 +123,8 @@ namespace Yconvert
                           std::string& dst);
 
         std::pair<size_t, size_t> do_convert(const void* src, size_t src_size,
-                                             void* dst, size_t dst_size);
+                                             void* dst, size_t dst_size,
+                                             bool src_is_final);
 
         size_t copy(const void* src, size_t src_size,
                     void* dst, size_t dst_size);

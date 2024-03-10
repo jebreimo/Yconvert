@@ -33,12 +33,14 @@ namespace Yconvert
          * @param src_size The number of bytes in the input sequence.
          * @param dst The output buffer.
          * @param dst_size The size of the output buffer.
+         * @param src_is_final True if the input sequence is the last part.
          * @return The number of bytes read from the input sequence and the
          *     number of characters written to the output buffer.
          */
         std::pair<size_t, size_t>
         decode(const void* src, size_t src_size,
-               char32_t* dst, size_t dst_size) const;
+               char32_t* dst, size_t dst_size,
+               bool src_is_final = true) const;
 
         virtual std::pair<size_t, size_t>
         count_valid_codepoints(const void* src, size_t src_size) const = 0;
@@ -46,7 +48,7 @@ namespace Yconvert
         explicit DecoderBase(Encoding encoding);
 
         virtual size_t
-        skip_character(const void* src, size_t src_size) const = 0;
+        skip_codepoint(const void* src, size_t src_size) const = 0;
 
         virtual std::pair<size_t, size_t>
         do_decode(const void* src, size_t src_size,

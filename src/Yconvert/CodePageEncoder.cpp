@@ -112,8 +112,8 @@ namespace Yconvert
         return {size, size};
     }
 
-    size_t CodePageEncoder::encode(const char32_t* src, size_t src_size,
-                                   std::string& dst)
+    void CodePageEncoder::encode(const char32_t* src, size_t src_size,
+                                 std::string& dst)
     {
         for (size_t i = 0; i < src_size; ++i)
         {
@@ -131,6 +131,5 @@ namespace Yconvert
                     "Encoding does not support the character.", i);
             }
         }
-        return src_size;
     }
 }

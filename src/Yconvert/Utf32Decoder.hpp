@@ -60,7 +60,7 @@ namespace Yconvert
         {}
 
     protected:
-        size_t skip_character(const void* src, size_t src_size) const final
+        size_t skip_codepoint(const void* src, size_t src_size) const final
         {
             auto c_src = static_cast<const char*>(src);
             auto initial_src = c_src;

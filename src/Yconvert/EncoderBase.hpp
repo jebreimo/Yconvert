@@ -39,8 +39,8 @@ namespace Yconvert
         encode(const char32_t* src, size_t src_size,
                void* dst, size_t dst_size) = 0;
 
-        virtual size_t encode(const char32_t* src, size_t src_size,
-                              std::string& dst) = 0;
+        virtual void encode(const char32_t* src, size_t src_size,
+                            std::string& dst) = 0;
     protected:
         explicit EncoderBase(Encoding encoding);
     private:

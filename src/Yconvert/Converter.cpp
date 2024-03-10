@@ -17,8 +17,6 @@ namespace Yconvert
 {
     namespace
     {
-        const size_t DEFAULT_BUFFER_SIZE = 256;
-
         size_t find_nth_code_point(DecoderBase& decoder,
                                    const char* src, size_t src_size,
                                    std::vector<char32_t>& buf, size_t n)
@@ -71,7 +69,7 @@ namespace Yconvert
 
     size_t Converter::buffer_size() const
     {
-        return buffer_.empty() ? DEFAULT_BUFFER_SIZE : buffer_.size();
+        return buffer_.empty() ? BUFFER_SIZE : buffer_.size();
     }
 
     void Converter::set_buffer_size(size_t size)
@@ -116,7 +114,7 @@ namespace Yconvert
             return src_size;
 
         if (buffer_.empty())
-            buffer_.resize(DEFAULT_BUFFER_SIZE);
+            buffer_.resize(BUFFER_SIZE);
 
         const auto& dec = get_encoding_info(decoder_->encoding());
         const auto& enc = get_encoding_info(encoder_->encoding());
@@ -167,7 +165,8 @@ namespace Yconvert
 
     std::pair<size_t, size_t>
     Converter::convert(const void* src, size_t src_size,
-                       void* dst, size_t dst_size)
+                       void* dst, size_t dst_size,
+                       bool src_is_final)
     {
         auto conversion_type = error_policy() == ErrorPolicy::IGNORE
                                ? conversion_type_
@@ -185,7 +184,7 @@ namespace Yconvert
             return {n, n};
         }
         case ConversionType::CONVERT:
-            return do_convert(src, src_size, dst, dst_size);
+            return do_convert(src, src_size, dst, dst_size, src_is_final);
         default:
             return {0, 0};
         }
@@ -231,62 +230,65 @@ namespace Yconvert
                                  std::string& dst)
     {
         if (buffer_.empty())
-            buffer_.resize(DEFAULT_BUFFER_SIZE);
+            buffer_.resize(BUFFER_SIZE);
 
         auto original_size = src_size;
         auto csrc = static_cast<const char*>(src);
         while (src_size != 0)
         {
-            auto [m, n] = decoder_->decode(csrc, src_size,
-                                           buffer_.data(), buffer_.size());
-            auto p = encoder_->encode(buffer_.data(), n, dst);
-            if (n != p)
-            {
-                src_size -= find_nth_code_point(*decoder_, csrc, src_size,
-                                                buffer_, p);
-                break;
-            }
-            csrc += m;
-            src_size -= m;
+            auto [dec_in, dec_out] = decoder_->decode(csrc, src_size,
+                                                      buffer_.data(), buffer_.size());
+            encoder_->encode(buffer_.data(), dec_out, dst);
+            csrc += dec_in;
+            src_size -= dec_in;
         }
         return original_size - src_size;
     }
 
     std::pair<size_t, size_t>
     Converter::do_convert(const void* src, size_t src_size,
-                          void* dst, size_t dst_size)
+                          void* dst, size_t dst_size,
+                          bool src_is_final)
     {
         if (buffer_.empty())
-            buffer_.resize(DEFAULT_BUFFER_SIZE);
+            buffer_.resize(BUFFER_SIZE);
 
         auto src_size_0 = src_size;
         auto dst_size_0 = dst_size;
         auto csrc = static_cast<const char*>(src);
         auto cdst = static_cast<char*>(dst);
-        size_t num_code_points = 0;
+        size_t code_point_offset = 0;
         try
         {
             while (src_size != 0)
             {
-                auto[m, n] = decoder_->decode(csrc, src_size,
-                                              buffer_.data(), buffer_.size());
-                auto [p, q] = encoder_->encode(buffer_.data(), n, cdst, dst_size);
-                if (n != p)
+                auto[dec_in, dec_out] = decoder_->decode(csrc, src_size,
+                                                         buffer_.data(), buffer_.size(),
+                                                         src_is_final);
+                if (dec_in == 0)
+                    break;
+                auto [enc_in, enc_out] = encoder_->encode(buffer_.data(), dec_out,
+                                                          cdst, dst_size);
+                if (dec_out != enc_in)
                 {
+                    // We've reached the end of the output buffer, but have
+                    // not encoded all codepoints in the input buffer. We need
+                    // to rewind the input buffer to the end of the last code
+                    // point that was encoded.
                     src_size -= find_nth_code_point(*decoder_, csrc, src_size,
-                                                    buffer_, p);
+                                                    buffer_, enc_in);
                     break;
                 }
-                csrc += m;
-                src_size -= m;
-                cdst += q;
-                dst_size -= q;
-                num_code_points += n;
+                csrc += dec_in;
+                src_size -= dec_in;
+                cdst += enc_out;
+                dst_size -= enc_out;
+                code_point_offset += dec_out;
             }
         }
         catch (ConversionException& ex)
         {
-            ex.code_point_index += num_code_points;
+            ex.code_point_offset += code_point_offset;
             throw;
         }
         return {src_size_0 - src_size, dst_size_0 - dst_size};
