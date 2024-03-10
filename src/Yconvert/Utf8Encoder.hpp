@@ -23,5 +23,8 @@ namespace Yconvert
 
         void encode(const char32_t* src, size_t src_size,
                     std::string& dst) override;
+
+        void encode(const char32_t* src, size_t src_size,
+                    std::ostream& dst) override;
     };
 }

@@ -13,6 +13,43 @@
 
 using namespace Yconvert;
 
+namespace
+{
+    std::wstring LONG_WSTRING = {
+        L"Property(Name = D.01_Prosess_1, Value = 74.4191, Utlegging av matjord (A-sjikt))Property(Name ="
+        L" D.02_Prosess_2, Value = 74.4191, Utlegging av matjord (B-sjikt))Property(Name ="
+        L" A.01_Objektnavn, Value = )Property(Name = E.01_Overflatebehandling, Value = Matjorda skal"
+        L" legges ut løst med ujevn overflate på ruglete/løs/ujevn undergrunnsmasse. Matjorda skal ikke"
+        L" komprimeres.)Property(Name = E.02_Sjikt_01, Value = Matjord, A-sjikt, t= avhengig av avtak,"
+        L" min. 50 cm)Property(Name = E.03_Sjikt_02, Value = Matjord, B-sjikt, t= avhengig av avtak, ca"
+        L" 20-40 cm)Property(Name = E.04_Sjikt_03, Value = Usoldet jord fra linja, til traubunn/fjell)"
+        L"Property(Name = A.02_Objektkode_tekst, Value = Matjord)Property(Name = A.03_Objektkode_nummer,"
+        L" Value = 744190)Property(Name = A.04_Beskrivelse, Value = Mellomlagret matjord tilbakeført fra"
+        L" ranker på samme eiendom.)Property(Name = B.01_Parsell, Value = )Property(Name = B.02_Område,"
+        L" Value = )Property(Name = C.01_MMI, Value = )Property(Name = D.03_Prosess_3, Value = 25.223,"
+        L" Usoldet jord fra linja)Property(Name = F.01_Merknad, Value = Omfatter også nødvendig"
+        L" utsortering av stubber, røtter, kvist og stein/klumper med tykkelse 50-100mm. All"
+        L" tilbakeføring skal skje med beltegående maskin.)Property(Name = G.01_Vertikalnivå, Value = 1)"
+    };
+
+    constexpr char8_t LONG_STRING[] = {
+        u8"Property(Name = D.01_Prosess_1, Value = 74.4191, Utlegging av matjord (A-sjikt))Property(Name ="
+        u8" D.02_Prosess_2, Value = 74.4191, Utlegging av matjord (B-sjikt))Property(Name ="
+        u8" A.01_Objektnavn, Value = )Property(Name = E.01_Overflatebehandling, Value = Matjorda skal"
+        u8" legges ut løst med ujevn overflate på ruglete/løs/ujevn undergrunnsmasse. Matjorda skal ikke"
+        u8" komprimeres.)Property(Name = E.02_Sjikt_01, Value = Matjord, A-sjikt, t= avhengig av avtak,"
+        u8" min. 50 cm)Property(Name = E.03_Sjikt_02, Value = Matjord, B-sjikt, t= avhengig av avtak, ca"
+        u8" 20-40 cm)Property(Name = E.04_Sjikt_03, Value = Usoldet jord fra linja, til traubunn/fjell)"
+        u8"Property(Name = A.02_Objektkode_tekst, Value = Matjord)Property(Name = A.03_Objektkode_nummer,"
+        u8" Value = 744190)Property(Name = A.04_Beskrivelse, Value = Mellomlagret matjord tilbakeført fra"
+        u8" ranker på samme eiendom.)Property(Name = B.01_Parsell, Value = )Property(Name = B.02_Område,"
+        u8" Value = )Property(Name = C.01_MMI, Value = )Property(Name = D.03_Prosess_3, Value = 25.223,"
+        u8" Usoldet jord fra linja)Property(Name = F.01_Merknad, Value = Omfatter også nødvendig"
+        u8" utsortering av stubber, røtter, kvist og stein/klumper med tykkelse 50-100mm. All"
+        u8" tilbakeføring skal skje med beltegående maskin.)Property(Name = G.01_Vertikalnivå, Value = 1)"
+    };
+}
+
 TEST_CASE("Convert empty UTF-8 to UTF-32")
 {
     std::string_view s;
@@ -40,34 +77,8 @@ TEST_CASE("Convert UTF-32 -> UTF-16")
 
 TEST_CASE("Convert long wstring")
 {
-    std::wstring w = L"Property(Name = D.01_Prosess_1, Value = 74.4191, Utlegging av matjord (A-sjikt))Property(Name ="
-                     L" D.02_Prosess_2, Value = 74.4191, Utlegging av matjord (B-sjikt))Property(Name ="
-                     L" A.01_Objektnavn, Value = )Property(Name = E.01_Overflatebehandling, Value = Matjorda skal"
-                     L" legges ut løst med ujevn overflate på ruglete/løs/ujevn undergrunnsmasse. Matjorda skal ikke"
-                     L" komprimeres.)Property(Name = E.02_Sjikt_01, Value = Matjord, A-sjikt, t= avhengig av avtak,"
-                     L" min. 50 cm)Property(Name = E.03_Sjikt_02, Value = Matjord, B-sjikt, t= avhengig av avtak, ca"
-                     L" 20-40 cm)Property(Name = E.04_Sjikt_03, Value = Usoldet jord fra linja, til traubunn/fjell)"
-                     L"Property(Name = A.02_Objektkode_tekst, Value = Matjord)Property(Name = A.03_Objektkode_nummer,"
-                     L" Value = 744190)Property(Name = A.04_Beskrivelse, Value = Mellomlagret matjord tilbakeført fra"
-                     L" ranker på samme eiendom.)Property(Name = B.01_Parsell, Value = )Property(Name = B.02_Område,"
-                     L" Value = )Property(Name = C.01_MMI, Value = )Property(Name = D.03_Prosess_3, Value = 25.223,"
-                     L" Usoldet jord fra linja)Property(Name = F.01_Merknad, Value = Omfatter også nødvendig"
-                     L" utsortering av stubber, røtter, kvist og stein/klumper med tykkelse 50-100mm. All"
-                     L" tilbakeføring skal skje med beltegående maskin.)Property(Name = G.01_Vertikalnivå, Value = 1)";
-    std::string s = U8("Property(Name = D.01_Prosess_1, Value = 74.4191, Utlegging av matjord (A-sjikt))Property(Name ="
-                       " D.02_Prosess_2, Value = 74.4191, Utlegging av matjord (B-sjikt))Property(Name ="
-                       " A.01_Objektnavn, Value = )Property(Name = E.01_Overflatebehandling, Value = Matjorda skal"
-                       " legges ut løst med ujevn overflate på ruglete/løs/ujevn undergrunnsmasse. Matjorda skal ikke"
-                       " komprimeres.)Property(Name = E.02_Sjikt_01, Value = Matjord, A-sjikt, t= avhengig av avtak,"
-                       " min. 50 cm)Property(Name = E.03_Sjikt_02, Value = Matjord, B-sjikt, t= avhengig av avtak, ca"
-                       " 20-40 cm)Property(Name = E.04_Sjikt_03, Value = Usoldet jord fra linja, til traubunn/fjell)"
-                       "Property(Name = A.02_Objektkode_tekst, Value = Matjord)Property(Name = A.03_Objektkode_nummer,"
-                       " Value = 744190)Property(Name = A.04_Beskrivelse, Value = Mellomlagret matjord tilbakeført fra"
-                       " ranker på samme eiendom.)Property(Name = B.01_Parsell, Value = )Property(Name = B.02_Område,"
-                       " Value = )Property(Name = C.01_MMI, Value = )Property(Name = D.03_Prosess_3, Value = 25.223,"
-                       " Usoldet jord fra linja)Property(Name = F.01_Merknad, Value = Omfatter også nødvendig"
-                       " utsortering av stubber, røtter, kvist og stein/klumper med tykkelse 50-100mm. All"
-                       " tilbakeføring skal skje med beltegående maskin.)Property(Name = G.01_Vertikalnivå, Value = 1)");
+    std::wstring w = LONG_WSTRING;
+    std::string s(reinterpret_cast<const char*>(LONG_STRING), sizeof(LONG_STRING) - 1);
     REQUIRE(convert_to<std::string>(w, Encoding::WSTRING_NATIVE, Encoding::UTF_8) == s);
 }
 
@@ -128,4 +139,14 @@ TEST_CASE("Convert a UTF-16 stream ending on a incomplete surrogate pair to UTF-
     REQUIRE(result[N - 3] == '\xEF');
     REQUIRE(result[N - 2] == '\xBF');
     REQUIRE(result[N - 1] == '\xBD');
+}
+
+TEST_CASE("Convert a UTF-8 string to a UTF-16 encoded stream")
+{
+    std::string s = "AB\xC3\xA7\xC3\xB1";
+    std::ostringstream ss;
+    Yconvert::convert_string(std::string_view(s), Encoding::UTF_8,
+                             ss, Encoding::UTF_16_LE);
+    std::string expected("A\0B\0\xE7\0\xF1\0", 8);
+    REQUIRE(ss.str() == expected);
 }

@@ -148,6 +148,31 @@ namespace Yconvert
         convert_string(source, destination, converter);
     }
 
+    void convert_string(const void* source, size_t source_size,
+                        std::ostream& destination,
+                        Converter& converter);
+
+    template <typename CharT>
+    void convert_string(std::basic_string_view<CharT> source,
+                        std::ostream& destination,
+                        Converter& converter)
+    {
+        convert_string(source.data(), source.size() * sizeof(CharT),
+                       destination, converter);
+    }
+
+    template <typename CharT>
+    void convert_string(std::basic_string_view<CharT> source,
+                        Encoding source_encoding,
+                        std::ostream& destination,
+                        Encoding destination_encoding,
+                        ErrorPolicy error_policy = ErrorPolicy::REPLACE)
+    {
+        Converter converter(source_encoding, destination_encoding);
+        converter.set_error_policy(error_policy);
+        convert_string(source, destination, converter);
+    }
+
     /**
      * @brief Converts the string @a source with @a converter
      *  and returns the result.

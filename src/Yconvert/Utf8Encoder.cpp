@@ -8,6 +8,7 @@
 #include "Utf8Encoder.hpp"
 
 #include <iterator>
+#include <ostream>
 
 namespace Yconvert
 {
@@ -81,6 +82,17 @@ namespace Yconvert
                              std::string& dst)
     {
         auto out = back_inserter(dst);
+        for (size_t i = 0; i < src_size; ++i)
+        {
+            auto n = Detail::get_utf8_encoded_length(src[i]);
+            Detail::encode_utf8(src[i], n, out);
+        }
+    }
+
+    void Utf8Encoder::encode(const char32_t* src, size_t src_size,
+                             std::ostream& dst)
+    {
+        auto out = std::ostreambuf_iterator(dst);
         for (size_t i = 0; i < src_size; ++i)
         {
             auto n = Detail::get_utf8_encoded_length(src[i]);

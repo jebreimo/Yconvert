@@ -106,7 +106,7 @@ namespace Yconvert
             break;
         }
 
-        const auto& info = get_encoding_info(encoding);
+        const auto& info = get_info(encoding);
         YCONVERT_THROW("Unsupported decoder: " + std::string(info.name));
     }
 
@@ -130,7 +130,7 @@ namespace Yconvert
             break;
         }
 
-        const auto& info = get_encoding_info(encoding);
+        const auto& info = get_info(encoding);
         YCONVERT_THROW("Unsupported encoder: " + std::string(info.name));
     }
 }

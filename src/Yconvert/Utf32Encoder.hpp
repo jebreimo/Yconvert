@@ -7,7 +7,9 @@
 //****************************************************************************
 #pragma once
 #include "EncoderBase.hpp"
+
 #include <iterator>
+#include <ostream>
 
 namespace Yconvert
 {
@@ -68,6 +70,17 @@ namespace Yconvert
                     std::string& dst) override
         {
             auto out = back_inserter(dst);
+            for (size_t i = 0; i < src_size; ++i)
+            {
+                if (src[i] <= UNICODE_MAX)
+                    Detail::add_bytes<SWAP_BYTES>(src[i], out);
+            }
+        }
+
+        void encode(const char32_t* src, size_t src_size,
+                    std::ostream& dst) override
+        {
+            auto out = std::ostreambuf_iterator(dst);
             for (size_t i = 0; i < src_size; ++i)
             {
                 if (src[i] <= UNICODE_MAX)

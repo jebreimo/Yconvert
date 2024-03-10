@@ -6,7 +6,6 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-
 #include <string>
 #include "Yconvert/Encoding.hpp"
 #include "Yconvert/ErrorPolicy.hpp"
@@ -41,6 +40,9 @@ namespace Yconvert
 
         virtual void encode(const char32_t* src, size_t src_size,
                             std::string& dst) = 0;
+
+        virtual void encode(const char32_t* src, size_t src_size,
+                            std::ostream& dst) = 0;
     protected:
         explicit EncoderBase(Encoding encoding);
     private:

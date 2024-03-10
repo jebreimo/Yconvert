@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <optional>
+#include <ostream>
 #include "Yconvert/ConversionException.hpp"
 
 namespace Yconvert
@@ -93,37 +94,34 @@ namespace Yconvert
     {
         auto cdst = static_cast<char*>(dst);
         auto size = std::min(src_size, dst_size);
-        for (size_t i = 0; i < size; ++i)
-        {
-            if (auto c = find_char(ranges_, src[i]))
-            {
-                *cdst++ = *c;
-            }
-            else if (error_policy() == ErrorPolicy::REPLACE)
-            {
-                *cdst++ = *find_char(ranges_, replacement_character());
-            }
-            else if (error_policy() == ErrorPolicy::THROW)
-            {
-                throw ConversionException(
-                    "Encoding does not support the character.", i);
-            }
-        }
+        encode_impl(src, cdst, size);
         return {size, size};
     }
 
     void CodePageEncoder::encode(const char32_t* src, size_t src_size,
                                  std::string& dst)
     {
-        for (size_t i = 0; i < src_size; ++i)
+        encode_impl(src, std::back_inserter(dst), src_size);
+    }
+
+    void CodePageEncoder::encode(const char32_t* src, size_t src_size, std::ostream& dst)
+    {
+        encode_impl(src, std::ostreambuf_iterator<char>(dst), src_size);
+    }
+
+    template <typename FwdIt>
+    void CodePageEncoder::encode_impl(const char32_t* src, FwdIt dst,
+                                      size_t count)
+    {
+        for (size_t i = 0; i < count; ++i)
         {
             if (auto c = find_char(ranges_, src[i]))
             {
-                dst.push_back(*c);
+                *dst++ = *c;
             }
             else if (error_policy() == ErrorPolicy::REPLACE)
             {
-                dst.push_back(*find_char(ranges_, replacement_character()));
+                *dst++ = *find_char(ranges_, replacement_character());
             }
             else if (error_policy() == ErrorPolicy::THROW)
             {

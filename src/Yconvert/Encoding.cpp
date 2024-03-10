@@ -173,7 +173,7 @@ namespace Yconvert
         }
     }
 
-    const EncodingInfo& get_encoding_info(Encoding encoding)
+    const EncodingInfo& get_info(Encoding encoding)
     {
         using std::begin;
         using std::end;
@@ -186,11 +186,10 @@ namespace Yconvert
         return ENCODING_INFO[0];
     }
 
-    std::pair<const EncodingInfo*, size_t> get_supported_encodings()
+    std::pair<const EncodingInfo*, size_t> get_all_encodings()
     {
         return {&ENCODING_INFO[1], std::size(ENCODING_INFO) - 1};
     }
-
 
     Encoding encoding_from_name(std::string name)
     {
@@ -317,7 +316,7 @@ namespace Yconvert
     {
         auto enc = determine_encoding_from_byte_order_mark(buffer, length);
         if (enc != Encoding::UNKNOWN)
-            return {enc, get_encoding_info(enc).byte_order_mark.size()};
+            return {enc, get_info(enc).byte_order_mark.size()};
 
         enc = determine_encoding_from_first_character(buffer, length);
         return {enc, 0};

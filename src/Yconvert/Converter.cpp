@@ -9,6 +9,7 @@
 
 #include <cassert>
 #include <cstring>
+#include <ostream>
 #include <vector>
 #include "Yconvert/ConversionException.hpp"
 #include "MakeEncodersAndDecoders.hpp"
@@ -24,7 +25,7 @@ namespace Yconvert
             assert(buf.size() >= n);
             if (n == 0)
                 return 0;
-            auto& info = get_encoding_info(decoder.encoding());
+            auto& info = get_info(decoder.encoding());
             if (info.max_units == 1)
                 return n * info.unit_size;
             return decoder.decode(src, src_size, buf.data(), n).first;
@@ -37,7 +38,7 @@ namespace Yconvert
             static_assert((UNIT_SIZE & ~UNIT_SIZE) == 0);
             size_t size = std::min(srcSize, dstSize);
             size -= size % UNIT_SIZE;
-            auto csrc = static_cast<const char*>(src);
+            auto c_src = static_cast<const char*>(src);
             auto cdst = static_cast<char*>(dst);
             if constexpr (UNIT_SIZE == 1)
             {
@@ -48,7 +49,7 @@ namespace Yconvert
                 for (size_t i = 0; i < size; i += UNIT_SIZE)
                 {
                     for (size_t j = 0; j < UNIT_SIZE; ++j)
-                        cdst[i + j] = csrc[i + UNIT_SIZE - 1 - j];
+                        cdst[i + j] = c_src[i + UNIT_SIZE - 1 - j];
                 }
             }
             return size;
@@ -116,8 +117,8 @@ namespace Yconvert
         if (buffer_.empty())
             buffer_.resize(BUFFER_SIZE);
 
-        const auto& dec = get_encoding_info(decoder_->encoding());
-        const auto& enc = get_encoding_info(encoder_->encoding());
+        const auto& dec = get_info(decoder_->encoding());
+        const auto& enc = get_info(encoder_->encoding());
         if (dec.max_units == 1 && enc.max_units == 1)
             return (src_size / dec.unit_size) * enc.unit_size;
         auto bytes = static_cast<const char*>(src);
@@ -190,6 +191,34 @@ namespace Yconvert
         }
     }
 
+    size_t Converter::convert(const void* src, size_t src_size,
+                              std::ostream& dst,
+                              bool src_is_final)
+    {
+        auto conversion_type = error_policy() == ErrorPolicy::IGNORE
+                               ? conversion_type_
+                               : ConversionType::CONVERT;
+        switch (conversion_type)
+        {
+        case ConversionType::SWAP_ENDIANNESS:
+        {
+            auto n = copy_and_swap(src, src_size, dst);
+            return n;
+        }
+        case ConversionType::COPY:
+        {
+            auto unit_size = get_info(decoder_->encoding()).unit_size;
+            auto count = std::streamsize(src_size - src_size % unit_size);
+            dst.write(static_cast<const char*>(src), count);
+            return count;
+        }
+        case ConversionType::CONVERT:
+            return do_convert(src, src_size, dst, src_is_final);
+        default:
+            return 0;
+        }
+    }
+
     Converter::ConversionType Converter::get_conversion_type(
             Encoding src, Encoding dst)
     {
@@ -208,7 +237,7 @@ namespace Yconvert
     size_t Converter::copy(const void* src, size_t src_size,
                            void* dst, size_t dst_size)
     {
-        auto unit_size = get_encoding_info(encoder_->encoding()).unit_size;
+        auto unit_size = get_info(encoder_->encoding()).unit_size;
         auto min_size = std::min(src_size, dst_size);
         min_size -= min_size % unit_size;
         memcpy(dst, src, min_size);
@@ -218,12 +247,31 @@ namespace Yconvert
     size_t Converter::copy_and_swap(const void* src, size_t src_size,
                                     void* dst, size_t dst_size)
     {
-        auto unit_size = get_encoding_info(decoder_->encoding()).unit_size;
+        auto unit_size = get_info(decoder_->encoding()).unit_size;
         if (unit_size == 2)
             return endian_copy<2>(src, src_size, dst, dst_size);
         else if (unit_size == 4)
             return endian_copy<4>(src, src_size, dst, dst_size);
         return 0;
+    }
+
+    size_t Converter::copy_and_swap(const void* src, size_t src_size,
+                                    std::ostream& dst)
+    {
+        if (buffer_.empty())
+            buffer_.resize(BUFFER_SIZE);
+
+        auto buf = reinterpret_cast<char*>(buffer_.data());
+        auto buf_size = buffer_.size() * sizeof(char32_t);
+
+        for (size_t i = 0; i < src_size; i += buf_size)
+        {
+            auto n = std::min(src_size - i, buf_size);
+            auto m = copy_and_swap(static_cast<const char*>(src) + i, n,
+                                   buf, buf_size);
+            dst.write(buf, std::streamsize(m));
+        }
+        return src_size;
     }
 
     size_t Converter::do_convert(const void* src, size_t src_size,
@@ -233,13 +281,13 @@ namespace Yconvert
             buffer_.resize(BUFFER_SIZE);
 
         auto original_size = src_size;
-        auto csrc = static_cast<const char*>(src);
+        auto c_src = static_cast<const char*>(src);
         while (src_size != 0)
         {
-            auto [dec_in, dec_out] = decoder_->decode(csrc, src_size,
+            auto [dec_in, dec_out] = decoder_->decode(c_src, src_size,
                                                       buffer_.data(), buffer_.size());
             encoder_->encode(buffer_.data(), dec_out, dst);
-            csrc += dec_in;
+            c_src += dec_in;
             src_size -= dec_in;
         }
         return original_size - src_size;
@@ -255,14 +303,14 @@ namespace Yconvert
 
         auto src_size_0 = src_size;
         auto dst_size_0 = dst_size;
-        auto csrc = static_cast<const char*>(src);
+        auto c_src = static_cast<const char*>(src);
         auto cdst = static_cast<char*>(dst);
         size_t code_point_offset = 0;
         try
         {
             while (src_size != 0)
             {
-                auto[dec_in, dec_out] = decoder_->decode(csrc, src_size,
+                auto[dec_in, dec_out] = decoder_->decode(c_src, src_size,
                                                          buffer_.data(), buffer_.size(),
                                                          src_is_final);
                 if (dec_in == 0)
@@ -275,11 +323,11 @@ namespace Yconvert
                     // not encoded all codepoints in the input buffer. We need
                     // to rewind the input buffer to the end of the last code
                     // point that was encoded.
-                    src_size -= find_nth_code_point(*decoder_, csrc, src_size,
+                    src_size -= find_nth_code_point(*decoder_, c_src, src_size,
                                                     buffer_, enc_in);
                     break;
                 }
-                csrc += dec_in;
+                c_src += dec_in;
                 src_size -= dec_in;
                 cdst += enc_out;
                 dst_size -= enc_out;
@@ -292,5 +340,27 @@ namespace Yconvert
             throw;
         }
         return {src_size_0 - src_size, dst_size_0 - dst_size};
+    }
+
+    size_t Converter::do_convert(const void* src, size_t src_size,
+                                 std::ostream& dst,
+                                 bool src_is_final)
+    {
+        if (buffer_.empty())
+            buffer_.resize(BUFFER_SIZE);
+
+        auto original_size = src_size;
+        auto c_src = static_cast<const char*>(src);
+        while (src_size != 0)
+        {
+            auto [dec_in, dec_out] = decoder_->decode(c_src, src_size,
+                                                      buffer_.data(),
+                                                      buffer_.size(),
+                                                      src_is_final);
+            encoder_->encode(buffer_.data(), dec_out, dst);
+            c_src += dec_in;
+            src_size -= dec_in;
+        }
+        return original_size - src_size;
     }
 }

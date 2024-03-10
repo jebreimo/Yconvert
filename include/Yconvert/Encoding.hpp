@@ -95,10 +95,17 @@ namespace Yconvert
      * @brief Return the @a EncdingInfo instance for @a encoding.
      */
     [[nodiscard]]
-    YCONVERT_API const EncodingInfo& get_encoding_info(Encoding encoding);
+    YCONVERT_API const EncodingInfo& get_info(Encoding encoding);
 
+    /**
+     * @brief Returns the EncodingInfos for the encodings supported by
+     *  Yconvert.
+     *
+     * The first element of the pair is a pointer to the first
+     * EncodingInfo, the second element is the number of encodings.
+     */
     [[nodiscard]]
-    YCONVERT_API std::pair<const EncodingInfo*, size_t> get_supported_encodings();
+    YCONVERT_API std::pair<const EncodingInfo*, size_t> get_all_encodings();
 
     /**
      * @brief Returns the @a Encoding that corresponds to @a name.

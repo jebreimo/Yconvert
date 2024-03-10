@@ -39,7 +39,12 @@ namespace Yconvert
         void encode(const char32_t* src, size_t src_size,
                     std::string& dst) override;
 
+        void encode(const char32_t* src, size_t src_size, std::ostream& dst) override;
+
     private:
+        template <typename FwdIt>
+        void encode_impl(const char32_t* src, FwdIt dst, size_t count);
+
         std::vector<CodePointMapRange> ranges_;
     };
 }

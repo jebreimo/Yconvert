@@ -10,12 +10,12 @@
 namespace Yconvert
 {
     std::pair<size_t, size_t>
-    convert_string(const void *source, size_t source_size,
-                   void *destination, size_t destination_size,
-                   Converter &converter)
+    convert_string(const void* source, size_t source_size,
+                   void* destination, size_t destination_size,
+                   Converter& converter)
     {
         return converter.convert(source, source_size,
-                                 destination, destination_size);
+                                 destination, destination_size, true);
     }
 
     std::pair<size_t, size_t>
@@ -28,6 +28,13 @@ namespace Yconvert
         Converter converter(source_encoding, destination_encoding);
         converter.set_error_policy(error_policy);
         return converter.convert(source, source_size,
-                                 destination, destination_size);
+                                 destination, destination_size, true);
+    }
+
+    void convert_string(const void* source, size_t source_size,
+                        std::ostream& destination,
+                        Converter& converter)
+    {
+        converter.convert(source, source_size, destination, true);
     }
 }
