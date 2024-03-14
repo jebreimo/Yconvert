@@ -137,7 +137,8 @@ namespace Yconvert
     }
 
     size_t Converter::convert(const void* src, size_t src_size,
-                              std::string& dst)
+                              std::string& dst,
+                              bool src_is_final)
     {
         auto conversion_type = error_policy() == ErrorPolicy::IGNORE
             ? conversion_type_
@@ -158,7 +159,7 @@ namespace Yconvert
                 return copy(src, src_size, dst.data() + old_size, src_size);
             }
         case ConversionType::CONVERT:
-            return do_convert(src, src_size, dst);
+            return do_convert(src, src_size, dst, src_is_final);
         default:
             return 0;
         }
@@ -275,7 +276,7 @@ namespace Yconvert
     }
 
     size_t Converter::do_convert(const void* src, size_t src_size,
-                                 std::string& dst)
+                                 std::string& dst, bool src_is_final)
     {
         if (buffer_.empty())
             buffer_.resize(BUFFER_SIZE);
@@ -285,7 +286,8 @@ namespace Yconvert
         while (src_size != 0)
         {
             auto [dec_in, dec_out] = decoder_->decode(c_src, src_size,
-                                                      buffer_.data(), buffer_.size());
+                                                      buffer_.data(), buffer_.size(),
+                                                      src_is_final);
             encoder_->encode(buffer_.data(), dec_out, dst);
             c_src += dec_in;
             src_size -= dec_in;

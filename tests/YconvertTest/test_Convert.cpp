@@ -145,8 +145,8 @@ TEST_CASE("Convert a UTF-8 string to a UTF-16 encoded stream")
 {
     std::string s = "AB\xC3\xA7\xC3\xB1";
     std::ostringstream ss;
-    Yconvert::convert_string(std::string_view(s), Encoding::UTF_8,
-                             ss, Encoding::UTF_16_LE);
+    Yconvert::convert(std::string_view(s), Encoding::UTF_8,
+                      ss, Encoding::UTF_16_LE);
     std::string expected("A\0B\0\xE7\0\xF1\0", 8);
     REQUIRE(ss.str() == expected);
 }

@@ -27,9 +27,9 @@ namespace Yconvert
      *  written to destination.
      */
     YCONVERT_API std::pair<size_t, size_t>
-    convert_string(const void* source, size_t source_size,
-                   void* destination, size_t destination_size,
-                   Converter& converter);
+    convert(const void* source, size_t source_size,
+            void* destination, size_t destination_size,
+            Converter& converter);
 
     /**
      * @brief Converts the string @a source from @a source_encoding
@@ -39,11 +39,11 @@ namespace Yconvert
      *  written to destination.
      */
     YCONVERT_API std::pair<size_t, size_t>
-    convert_string(const void* source, size_t source_size,
-                   Encoding source_encoding,
-                   void* destination, size_t destination_size,
-                   Encoding destination_encoding,
-                   ErrorPolicy error_policy = ErrorPolicy::REPLACE);
+    convert(const void* source, size_t source_size,
+            Encoding source_encoding,
+            void* destination, size_t destination_size,
+            Encoding destination_encoding,
+            ErrorPolicy error_policy = ErrorPolicy::REPLACE);
 
     /**
      * @brief Converts the string @a source with @a converter and writes
@@ -54,9 +54,9 @@ namespace Yconvert
      */
     template <typename CharT>
     std::pair<size_t, size_t>
-    convert_string(std::basic_string_view<CharT> source,
-                   void* destination, size_t destination_size,
-                   Converter& converter)
+    convert(std::basic_string_view<CharT> source,
+            void* destination, size_t destination_size,
+            Converter& converter)
     {
         using SrcString = std::basic_string_view<CharT>;
         auto src_size = source.size() * sizeof(typename SrcString::value_type);
@@ -75,15 +75,15 @@ namespace Yconvert
      */
     template <typename CharT>
     std::pair<size_t, size_t>
-    convert_string(std::basic_string_view<CharT> source,
-                   Encoding source_encoding,
-                   void* destination, size_t destination_size,
-                   Encoding destination_encoding,
-                   ErrorPolicy error_policy = ErrorPolicy::REPLACE)
+    convert(std::basic_string_view<CharT> source,
+            Encoding source_encoding,
+            void* destination, size_t destination_size,
+            Encoding destination_encoding,
+            ErrorPolicy error_policy = ErrorPolicy::REPLACE)
     {
         Converter converter(source_encoding, destination_encoding);
         converter.set_error_policy(error_policy);
-        return convert_string(source, destination, destination_size, converter);
+        return convert(source, destination, destination_size, converter);
     }
 
     /**
@@ -91,9 +91,9 @@ namespace Yconvert
      *  the result to @a destination.
      */
     template <typename CharT>
-    void convert_string(std::basic_string_view<CharT> source,
-                        std::string& destination,
-                        Converter& converter)
+    void convert(std::basic_string_view<CharT> source,
+                 std::string& destination,
+                 Converter& converter)
     {
         using SrcString = std::basic_string_view<CharT>;
         auto src_size = source.size() * sizeof(typename SrcString::value_type);
@@ -104,16 +104,16 @@ namespace Yconvert
      * @brief Converts the string @a source from @a source_encoding
      *  to @a destination_encoding and writes the result to @a destination.
      */
-    template <typename CharT>
-    void convert_string(std::basic_string_view<CharT> source,
-                        Encoding source_encoding,
-                        std::string& destination,
-                        Encoding destination_encoding,
-                        ErrorPolicy errorPolicy = ErrorPolicy::REPLACE)
+    template <typename Char1T, typename Char2T>
+    void convert(std::basic_string_view<Char1T> source,
+                 Encoding source_encoding,
+                 std::basic_string<Char2T>& destination,
+                 Encoding destination_encoding,
+                 ErrorPolicy error_policy = ErrorPolicy::REPLACE)
     {
         Converter converter(source_encoding, destination_encoding);
-        converter.set_error_policy(errorPolicy);
-        convert_string(source, destination, converter);
+        converter.set_error_policy(error_policy);
+        convert(source, destination, converter);
     }
 
     /**
@@ -121,9 +121,9 @@ namespace Yconvert
      *  the result to @a destination.
      */
     template <typename Char1T, typename Char2T>
-    void convert_string(std::basic_string_view<Char1T> source,
-                        std::basic_string<Char2T>& destination,
-                        Converter& converter)
+    void convert(std::basic_string_view<Char1T> source,
+                 std::basic_string<Char2T>& destination,
+                 Converter& converter)
     {
         auto src_size = source.size() * sizeof(Char1T);
         auto dst_size = converter.get_encoded_size(source.data(), src_size);
@@ -132,46 +132,88 @@ namespace Yconvert
                           destination.data(), dst_size);
     }
 
-    /**
-     * @brief Converts the string @a source from @a source_encoding
-     *  to @a destination_encoding and writes the result to @a destination.
-     */
-    template <typename Char1T, typename Char2T>
-    void convert_string(std::basic_string_view<Char1T> source,
-                        Encoding source_encoding,
-                        std::basic_string<Char2T>& destination,
-                        Encoding destination_encoding,
-                        ErrorPolicy error_policy = ErrorPolicy::REPLACE)
-    {
-        Converter converter(source_encoding, destination_encoding);
-        converter.set_error_policy(error_policy);
-        convert_string(source, destination, converter);
-    }
-
-    void convert_string(const void* source, size_t source_size,
-                        std::ostream& destination,
-                        Converter& converter);
+    YCONVERT_API void convert(const void* source, size_t source_size,
+                              std::ostream& destination,
+                              Converter& converter);
 
     template <typename CharT>
-    void convert_string(std::basic_string_view<CharT> source,
-                        std::ostream& destination,
-                        Converter& converter)
+    void convert(std::basic_string_view<CharT> source,
+                 std::ostream& destination,
+                 Converter& converter)
     {
-        convert_string(source.data(), source.size() * sizeof(CharT),
+        convert(source.data(), source.size() * sizeof(CharT),
                        destination, converter);
     }
 
     template <typename CharT>
-    void convert_string(std::basic_string_view<CharT> source,
-                        Encoding source_encoding,
-                        std::ostream& destination,
-                        Encoding destination_encoding,
-                        ErrorPolicy error_policy = ErrorPolicy::REPLACE)
+    void convert(std::basic_string_view<CharT> source,
+                 Encoding source_encoding,
+                 std::ostream& destination,
+                 Encoding destination_encoding,
+                 ErrorPolicy error_policy = ErrorPolicy::REPLACE)
     {
         Converter converter(source_encoding, destination_encoding);
         converter.set_error_policy(error_policy);
-        convert_string(source, destination, converter);
+        convert(source, destination, converter);
     }
+
+    template <typename CharT>
+    void convert(std::istream& source,
+                 std::basic_string<CharT>& destination,
+                 Converter& converter)
+    {
+        std::vector<char> buffer(BUFFER_SIZE);
+        size_t source_offset = 0;
+        for (;;)
+        {
+            source.read(buffer.data() + source_offset,
+                        std::streamsize(buffer.size() - source_offset));
+            auto bytes_read = source.gcount();
+            auto buf_size = bytes_read + source_offset;
+            if (buf_size == 0)
+                break;
+            bool src_is_final = source.eof();
+            auto result_offset = destination.size();
+            auto enc_size = converter.get_encoded_size(buffer.data(), buf_size);
+            auto raw_size = enc_size / sizeof(CharT);
+            destination.resize(result_offset + raw_size);
+            auto [src_siz, dst_siz] = converter.convert(buffer.data(), buf_size,
+                                                        destination.data() + result_offset,
+                                                        enc_size, src_is_final);
+            if (src_siz != buf_size)
+            {
+                std::copy(buffer.begin() + src_siz, buffer.end(), buffer.begin());
+                source_offset = buffer.size() - src_siz;
+            }
+            else
+            {
+                source_offset = 0;
+            }
+            destination.resize(result_offset + dst_siz / sizeof(CharT));
+        }
+    }
+
+    YCONVERT_API void convert(std::istream& source,
+                              std::string& destination,
+                              Converter& converter);
+
+    /**
+     * @brief Converts the stream @a source with @a converter and writes
+     *  the result to @a destination.
+     */
+    YCONVERT_API void convert(std::istream& source,
+                              std::ostream& destination,
+                              Converter& converter);
+
+    /**
+     * @brief Converts the stream @a source from @a source_encoding
+     *  to @a destination_encoding and writes the result to @a destination.
+     */
+    YCONVERT_API void convert(std::istream& source,
+                              Encoding source_encoding,
+                              std::ostream& destination,
+                              Encoding destination_encoding,
+                              ErrorPolicy error_policy = ErrorPolicy::REPLACE);
 
     /**
      * @brief Converts the string @a source with @a converter
@@ -185,7 +227,7 @@ namespace Yconvert
                        Converter& converter)
     {
         StringT result;
-        convert_string<CharT, typename StringT::value_type>(source, result,
+        convert<CharT, typename StringT::value_type>(source, result,
                                                             converter);
         return result;
     }
@@ -219,7 +261,7 @@ namespace Yconvert
                        ErrorPolicy error_policy = ErrorPolicy::REPLACE)
     {
         StringT result;
-        convert_string<CharT, typename StringT::value_type>(
+        convert<CharT, typename StringT::value_type>(
             source, source_encoding, result, result_encoding, error_policy);
         return result;
     }
@@ -252,35 +294,7 @@ namespace Yconvert
                        Converter& converter)
     {
         StringT result;
-        std::vector<char> buffer(BUFFER_SIZE);
-        size_t source_offset = 0;
-        for (;;)
-        {
-            source.read(buffer.data() + source_offset,
-                        std::streamsize(buffer.size() - source_offset));
-            auto bytes_read = source.gcount();
-            auto buf_size = bytes_read + source_offset;
-            if (buf_size == 0)
-                break;
-            bool src_is_final = source.eof();
-            auto result_offset = result.size();
-            auto enc_size = converter.get_encoded_size(buffer.data(), buf_size);
-            auto raw_size = enc_size / sizeof(typename StringT::value_type);
-            result.resize(result_offset + raw_size);
-            auto [src_siz, dst_siz] = converter.convert(buffer.data(), buf_size,
-                                                        result.data() + result_offset,
-                                                        enc_size, src_is_final);
-            if (src_siz != buf_size)
-            {
-                std::copy(buffer.begin() + src_siz, buffer.end(), buffer.begin());
-                source_offset = buffer.size() - src_siz;
-            }
-            else
-            {
-                source_offset = 0;
-            }
-            result.resize(result_offset + dst_siz / sizeof(typename StringT::value_type));
-        }
+        convert(source, result, converter);
         return result;
     }
 

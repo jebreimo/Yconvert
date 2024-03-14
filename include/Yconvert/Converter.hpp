@@ -104,7 +104,8 @@ namespace Yconvert
         size_t get_encoded_size(const void* src, size_t src_size);
 
         size_t convert(const void* src, size_t src_size,
-                       std::string& dst);
+                       std::string& dst,
+                       bool src_is_final = true);
 
         std::pair<size_t, size_t> convert(const void* src, size_t src_size,
                                           void* dst, size_t dst_size,
@@ -126,7 +127,8 @@ namespace Yconvert
                                                   Encoding dst);
 
         size_t do_convert(const void* src, size_t src_size,
-                          std::string& dst);
+                          std::string& dst,
+                          bool src_is_final);
 
         std::pair<size_t, size_t> do_convert(const void* src, size_t src_size,
                                              void* dst, size_t dst_size,
