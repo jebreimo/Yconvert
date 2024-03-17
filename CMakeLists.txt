@@ -51,6 +51,7 @@ add_library(Yconvert
     include/Yconvert/Yconvert.hpp
     include/Yconvert/YconvertDefinitions.hpp
     include/Yconvert/YconvertException.hpp
+    include/Yconvert/Details/InputStreamWrapper.hpp
     src/Yconvert/CodePageDecoder.cpp
     src/Yconvert/CodePageDecoder.hpp
     src/Yconvert/CodePageDefinitions.hpp
@@ -75,6 +76,7 @@ add_library(Yconvert
     src/Yconvert/CodePageEncoder.cpp
     src/Yconvert/CodePageEncoder.hpp
     src/Yconvert/YconvertThrow.hpp
+    src/Yconvert/Details/InputStreamWrapper.cpp
 )
 
 target_include_directories(Yconvert BEFORE

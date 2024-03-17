@@ -11,6 +11,7 @@
 #include <string_view>
 #include "Converter.hpp"
 #include "Encoding.hpp"
+#include "Yconvert/Details/InputStreamWrapper.hpp"
 
 /** @file
   * @brief Defines functions that convert strings from one encoding
@@ -162,34 +163,18 @@ namespace Yconvert
                  std::basic_string<CharT>& destination,
                  Converter& converter)
     {
-        std::vector<char> buffer(BUFFER_SIZE);
-        size_t source_offset = 0;
-        for (;;)
+        Details::InputStreamWrapper input(source);
+        while (input.fill())
         {
-            source.read(buffer.data() + source_offset,
-                        std::streamsize(buffer.size() - source_offset));
-            auto bytes_read = source.gcount();
-            auto buf_size = bytes_read + source_offset;
-            if (buf_size == 0)
-                break;
-            bool src_is_final = source.eof();
             auto result_offset = destination.size();
-            auto enc_size = converter.get_encoded_size(buffer.data(), buf_size);
-            auto raw_size = enc_size / sizeof(CharT);
-            destination.resize(result_offset + raw_size);
-            auto [src_siz, dst_siz] = converter.convert(buffer.data(), buf_size,
-                                                        destination.data() + result_offset,
-                                                        enc_size, src_is_final);
-            if (src_siz != buf_size)
-            {
-                std::copy(buffer.begin() + src_siz, buffer.end(), buffer.begin());
-                source_offset = buffer.size() - src_siz;
-            }
-            else
-            {
-                source_offset = 0;
-            }
-            destination.resize(result_offset + dst_siz / sizeof(CharT));
+            auto raw_size = converter.get_encoded_size(input.data(), input.size());
+            auto enc_size = raw_size / sizeof(CharT);
+            destination.resize(result_offset + enc_size);
+            auto sizes = converter.convert(input.data(), input.size(),
+                                           destination.data() + result_offset,
+                                           raw_size, input.eof());
+            input.drain(sizes.first);
+            destination.resize(result_offset + sizes.second / sizeof(CharT));
         }
     }
 

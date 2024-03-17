@@ -288,6 +288,8 @@ namespace Yconvert
             auto [dec_in, dec_out] = decoder_->decode(c_src, src_size,
                                                       buffer_.data(), buffer_.size(),
                                                       src_is_final);
+            if (dec_in == 0)
+                break;
             encoder_->encode(buffer_.data(), dec_out, dst);
             c_src += dec_in;
             src_size -= dec_in;
@@ -359,6 +361,8 @@ namespace Yconvert
                                                       buffer_.data(),
                                                       buffer_.size(),
                                                       src_is_final);
+            if (dec_in == 0)
+                break;
             encoder_->encode(buffer_.data(), dec_out, dst);
             c_src += dec_in;
             src_size -= dec_in;

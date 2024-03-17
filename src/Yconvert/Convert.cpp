@@ -42,29 +42,12 @@ namespace Yconvert
                  std::string& destination,
                  Converter& converter)
     {
-        std::vector<char> buffer(BUFFER_SIZE);
-        size_t source_offset = 0;
-        for (;;)
+        Details::InputStreamWrapper input(source);
+        while (input.fill())
         {
-            source.read(buffer.data() + source_offset,
-                        std::streamsize(buffer.size() - source_offset));
-            auto bytes_read = source.gcount();
-            auto buf_size = bytes_read + source_offset;
-            if (buf_size == 0)
-                break;
-            bool src_is_final = source.eof();
-            auto src_siz = converter.convert(buffer.data(), buf_size,
-                                             destination, src_is_final);
-            if (src_siz != buf_size)
-            {
-                std::copy(buffer.begin() + ptrdiff_t(src_siz), buffer.end(),
-                          buffer.begin());
-                source_offset = buffer.size() - src_siz;
-            }
-            else
-            {
-                source_offset = 0;
-            }
+            auto src_siz = converter.convert(input.data(), input.size(),
+                                             destination, input.eof());
+            input.drain(src_siz);
         }
     }
 
@@ -72,7 +55,13 @@ namespace Yconvert
                  std::ostream& destination,
                  Converter& converter)
     {
-
+        Details::InputStreamWrapper input(source);
+        while (input.fill())
+        {
+            auto src_siz = converter.convert(input.data(), input.size(),
+                                             destination, input.eof());
+            input.drain(src_siz);
+        }
     }
 
     void convert(std::istream& source, Encoding source_encoding,
