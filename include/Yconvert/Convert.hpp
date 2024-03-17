@@ -178,6 +178,10 @@ namespace Yconvert
         }
     }
 
+    /**
+     * @brief Converts the stream @a source with @a converter and writes
+     * the result to @a destination.
+     */
     YCONVERT_API void convert(std::istream& source,
                               std::string& destination,
                               Converter& converter);
