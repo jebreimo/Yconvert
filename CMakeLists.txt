@@ -75,6 +75,8 @@ add_library(Yconvert
     src/Yconvert/CodePageEncoder.cpp
     src/Yconvert/CodePageEncoder.hpp
     src/Yconvert/YconvertThrow.hpp
+    src/Yconvert/Iterator.cpp
+    src/Yconvert/Iterator.hpp
 )
 
 target_include_directories(Yconvert BEFORE
