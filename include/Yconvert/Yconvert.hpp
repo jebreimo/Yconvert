@@ -10,4 +10,5 @@
 #include "ConversionException.hpp"
 #include "Convert.hpp"
 #include "EncodingChecker.hpp"
+#include "Utf32Iterator.hpp"
 #include "YconvertVersion.hpp"

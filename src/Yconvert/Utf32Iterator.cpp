@@ -5,7 +5,7 @@
 // This file is distributed under the BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
-#include "Iterator.hpp"
+#include "Yconvert/Utf32Iterator.hpp"
 #include <array>
 #include <istream>
 #include <span>
@@ -64,7 +64,7 @@ namespace Yconvert
         using Source = std::variant<StreamReader, BufferReader>;
     }
 
-    struct Iterator::Data
+    struct Utf32Iterator::Data
     {
         explicit Data(std::span<const char> buffer) // NOLINT(*-pro-type-member-init)
             : source(BufferReader(buffer))
@@ -79,19 +79,27 @@ namespace Yconvert
         std::unique_ptr<DecoderBase> decoder;
     };
 
-    Iterator::Iterator(const void* buffer, size_t size, Encoding encoding)
+    Utf32Iterator::Utf32Iterator() = default;
+
+    Utf32Iterator::Utf32Iterator(const void* buffer, size_t size,
+                                 Encoding encoding,
+                                 ErrorPolicy error_policy)
         : data_(std::make_unique<Data>(std::span{static_cast<const char*>(buffer), size}))
     {
         data_->decoder = make_decoder(encoding);
+        data_->decoder->set_error_policy(error_policy);
     }
 
-    Iterator::Iterator(std::istream& stream, Encoding encoding)
+    Utf32Iterator::Utf32Iterator(std::istream& stream,
+                                 Encoding encoding,
+                                 ErrorPolicy error_policy)
         : data_(std::make_unique<Data>(stream))
     {
         data_->decoder = make_decoder(encoding);
+        data_->decoder->set_error_policy(error_policy);
     }
 
-    Iterator::Iterator(Iterator&& other) noexcept
+    Utf32Iterator::Utf32Iterator(Utf32Iterator&& other) noexcept
         : chars_(other.chars_),
           i_(other.i_),
           data_(std::move(other.data_))
@@ -99,9 +107,9 @@ namespace Yconvert
         other.i_ = 0;
     }
 
-    Iterator::~Iterator() = default;
+    Utf32Iterator::~Utf32Iterator() = default;
 
-    Iterator& Iterator::operator=(Iterator&& other) noexcept
+    Utf32Iterator& Utf32Iterator::operator=(Utf32Iterator&& other) noexcept
     {
         chars_ = other.chars_;
         i_ = other.i_;
@@ -110,8 +118,11 @@ namespace Yconvert
         return *this;
     }
 
-    bool Iterator::fill_buffer()
+    bool Utf32Iterator::fill_buffer()
     {
+        if (!data_)
+            return false;
+
         struct Visitor
         {
             size_t operator()(StreamReader& reader) const
@@ -124,11 +135,12 @@ namespace Yconvert
                 return reader.read(data.buffer, std::size(data.buffer), *data.decoder);
             }
 
-            Iterator::Data& data;
+            Utf32Iterator::Data& data;
         };
 
         auto size = std::visit(Visitor{*data_}, data_->source);
         chars_ = std::u32string_view(data_->buffer, size);
+        i_ = 0;
         return size != 0;
     }
 }

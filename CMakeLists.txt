@@ -52,9 +52,12 @@ add_library(Yconvert
     include/Yconvert/YconvertDefinitions.hpp
     include/Yconvert/YconvertException.hpp
     include/Yconvert/Details/InputStreamWrapper.hpp
+    include/Yconvert/Utf32Iterator.hpp
     src/Yconvert/CodePageDecoder.cpp
     src/Yconvert/CodePageDecoder.hpp
     src/Yconvert/CodePageDefinitions.hpp
+    src/Yconvert/CodePageEncoder.cpp
+    src/Yconvert/CodePageEncoder.hpp
     src/Yconvert/Convert.cpp
     src/Yconvert/Converter.cpp
     src/Yconvert/DecoderBase.cpp
@@ -71,14 +74,11 @@ add_library(Yconvert
     src/Yconvert/Utf8Encoder.hpp
     src/Yconvert/Utf16Decoder.hpp
     src/Yconvert/Utf16Encoder.hpp
-    src/Yconvert/Utf32Encoder.hpp
     src/Yconvert/Utf32Decoder.hpp
-    src/Yconvert/CodePageEncoder.cpp
-    src/Yconvert/CodePageEncoder.hpp
+    src/Yconvert/Utf32Encoder.hpp
+    src/Yconvert/Utf32Iterator.cpp
     src/Yconvert/YconvertThrow.hpp
     src/Yconvert/Details/InputStreamWrapper.cpp
-    src/Yconvert/Iterator.cpp
-    src/Yconvert/Iterator.hpp
 )
 
 target_include_directories(Yconvert BEFORE
