@@ -63,4 +63,82 @@ namespace Yconvert
         struct Data;
         std::unique_ptr<Data> data_;
     };
+
+
+    /**
+     * @brief Adapts a Utf32Iterator to be used in range-based for loops.
+     *
+     * This class is not intended to be used directly, use the begin() and
+     * end() functions on Utf32Iterator instead.
+     */
+    class Utf32InputIteratorAdapter
+    {
+    public:
+        typedef char32_t value_type;
+        typedef std::input_iterator_tag iterator_category;
+        typedef void difference_type;
+        typedef const value_type* pointer;
+        typedef const value_type& reference;
+
+        Utf32InputIteratorAdapter() = default;
+
+        explicit Utf32InputIteratorAdapter(Utf32Iterator& iterator)
+            : iterator_(&iterator),
+              is_end_(!iterator_->next(&character_))
+        {}
+
+        Utf32InputIteratorAdapter(const Utf32InputIteratorAdapter&) = delete;
+
+        Utf32InputIteratorAdapter& operator++(int)
+        {
+            if (!is_end_)
+                is_end_ = !iterator_->next(&character_);
+            return *this;
+        }
+
+        void operator++()
+        {
+            if (!is_end_)
+                is_end_ = !iterator_->next();
+        }
+
+        const char32_t& operator*() const
+        {
+            return character_;
+        }
+
+        const char32_t* operator->() const
+        {
+            return &character_;
+        }
+    private:
+        friend bool operator==(const Utf32InputIteratorAdapter& lhs,
+                               const Utf32InputIteratorAdapter& rhs);
+
+        Utf32Iterator* iterator_ = nullptr;
+        char32_t character_ = {};
+        bool is_end_ = true;
+    };
+
+    inline bool operator==(const Utf32InputIteratorAdapter& lhs,
+                           const Utf32InputIteratorAdapter& rhs)
+    {
+        return lhs.iterator_ == rhs.iterator_ || lhs.is_end_ == rhs.is_end_;
+    }
+
+    inline bool operator!=(const Utf32InputIteratorAdapter& lhs,
+                           const Utf32InputIteratorAdapter& rhs)
+    {
+        return !(lhs == rhs);
+    }
+
+    inline auto begin(Utf32Iterator& iterator)
+    {
+        return Utf32InputIteratorAdapter(iterator);
+    }
+
+    inline auto end(const Utf32Iterator&)
+    {
+        return Utf32InputIteratorAdapter();
+    }
 }
