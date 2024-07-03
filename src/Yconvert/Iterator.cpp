@@ -10,69 +10,84 @@
 #include <istream>
 #include <span>
 #include <variant>
-
+#include "Yconvert/Details/InputStreamWrapper.hpp"
 #include "MakeEncodersAndDecoders.hpp"
 
 namespace Yconvert
 {
     namespace
     {
+        constexpr size_t CHAR32_BUFFER_SIZE = 256;
+
         struct StreamReader
         {
             explicit StreamReader(std::istream& stream)
-                : stream_(&stream)
+                : input_(stream)
             {}
 
             size_t read(char32_t* buffer, size_t size, const DecoderBase& decoder)
             {
-                if (span_.size() < size)
+                auto [read, written] = decoder.decode(input_.data(), input_.size(),
+                                                      buffer, size);
+                input_.drain(read);
+                if (written < size && !input_.eof())
                 {
-                    if (!span_.empty() && span_.data() != buffer_)
-                    {
-                        std::copy(span_.begin(), span_.end(), buffer_);
-                        span_ = {buffer_, span_.size()};
-                    }
-
-                    stream_->read(buffer_ + span_.size(),
-                                  std::streamsize(sizeof(buffer_) - span_.size()));
-                    span_ = {buffer_, static_cast<size_t>(span_.size() + stream_->gcount())};
+                    read = input_.fill();
+                    if (read == 0)
+                        return 0;
+                    std::tie(read, written) = decoder.decode(input_.data(), input_.size(),
+                                                             buffer + written, size - written);
+                    input_.drain(read);
                 }
-
-                auto [read, written] = decoder.decode(span_.data(), span_.size(),
-                                                  buffer, size);
-                span_ = span_.subspan(read);
                 return written;
             }
 
-            std::istream* stream_;
-            char buffer_[1024];
-            std::span<char> span_;
+            Details::InputStreamWrapper input_;
         };
 
-        using Source = std::variant<std::istream*, std::span<const char>>;
+        struct BufferReader
+        {
+            explicit BufferReader(std::span<const char> buffer)
+                : input_(buffer)
+            {}
+
+            size_t read(char32_t* buffer, size_t size, const DecoderBase& decoder)
+            {
+                auto [read, written] = decoder.decode(input_.data(), input_.size(),
+                                                      buffer, size);
+                input_ = input_.subspan(read);
+                return written;
+            }
+
+            std::span<const char> input_;
+        };
+        using Source = std::variant<StreamReader, BufferReader>;
     }
 
     struct Iterator::Data
     {
+        explicit Data(std::span<const char> buffer) // NOLINT(*-pro-type-member-init)
+            : source(BufferReader(buffer))
+        {}
+
+        explicit Data(std::istream& stream) // NOLINT(*-pro-type-member-init)
+            : source(StreamReader(stream))
+        {}
+
         Source source;
-        char32_t buffer[256];
-        size_t buffer_size = 0;
-        char io_buffer[1024];
-        std::span<char> io_span;
+        char32_t buffer[CHAR32_BUFFER_SIZE];
         std::unique_ptr<DecoderBase> decoder;
     };
 
     Iterator::Iterator(const void* buffer, size_t size, Encoding encoding)
-        : data_(std::make_unique<Data>())
+        : data_(std::make_unique<Data>(std::span{static_cast<const char*>(buffer), size}))
     {
-        data_->source = std::span(static_cast<const char*>(buffer), size);
         data_->decoder = make_decoder(encoding);
     }
 
     Iterator::Iterator(std::istream& stream, Encoding encoding)
-        : data_(std::make_unique<Data>())
+        : data_(std::make_unique<Data>(stream))
     {
-        data_->source = &stream;
         data_->decoder = make_decoder(encoding);
     }
 
@@ -97,33 +112,23 @@ namespace Yconvert
 
     bool Iterator::fill_buffer()
     {
-        auto& data = *data_;
-        if (data.buffer_size == 0)
+        struct Visitor
         {
-            if (std::holds_alternative<std::istream*>(data.source))
+            size_t operator()(StreamReader& reader) const
             {
-                auto& stream = *std::get<std::istream*>(data.source);
-                if (!stream)
-                    return false;
-                stream.read(data.buffer, sizeof(data.buffer));
-                data.buffer_size = stream.gcount();
+                return reader.read(data.buffer, std::size(data.buffer), *data.decoder);
             }
-            else
-            {
-                auto& span = std::get<std::span<const char>>(data.source);
-                if (span.empty())
-                    return false;
-                data.buffer_size = std::min(span.size(), sizeof(data.buffer));
-                std::copy(span.begin(), span.begin() + data.buffer_size, data.buffer);
-                span = span.subspan(data.buffer_size);
-            }
-        }
 
-        auto [read, written] = data.decoder->decode(data.buffer, data.buffer_size,
-                                                    data.buffer, sizeof(data.buffer));
-        data.buffer_size = read;
-        chars_ = std::u32string_view(data.buffer, written);
-        i_ = 0;
-        return true;
+            size_t operator()(BufferReader& reader) const
+            {
+                return reader.read(data.buffer, std::size(data.buffer), *data.decoder);
+            }
+
+            Iterator::Data& data;
+        };
+
+        auto size = std::visit(Visitor{*data_}, data_->source);
+        chars_ = std::u32string_view(data_->buffer, size);
+        return size != 0;
     }
 }
