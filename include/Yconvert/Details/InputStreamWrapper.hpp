@@ -53,7 +53,7 @@ namespace Yconvert::Details
         bool eof() const;
     private:
         std::istream* stream_;
-        std::vector<char> buffer_;
+        char buffer_[Yconvert::BUFFER_SIZE];
         size_t buffer_size_ = 0;
     };
 }

@@ -10,15 +10,14 @@
 
 namespace Yconvert::Details
 {
-    InputStreamWrapper::InputStreamWrapper(std::istream& stream)
-        : stream_(&stream),
-          buffer_(Yconvert::BUFFER_SIZE)
+    InputStreamWrapper::InputStreamWrapper(std::istream& stream) // NOLINT(*-pro-type-member-init)
+        : stream_(&stream)
     {}
 
     bool InputStreamWrapper::fill()
     {
-        stream_->read(buffer_.data() + buffer_size_,
-                      std::streamsize(buffer_.size() - buffer_size_));
+        stream_->read(buffer_ + buffer_size_,
+                      std::streamsize(sizeof(buffer_) - buffer_size_));
         buffer_size_ += stream_->gcount();
         return buffer_size_ != 0;
     }
@@ -31,15 +30,15 @@ namespace Yconvert::Details
         }
         else if (n < buffer_size_)
         {
-            std::copy(buffer_.begin() + ptrdiff_t(n), buffer_.end(),
-                      buffer_.begin());
+            std::copy(buffer_ + ptrdiff_t(n), std::end(buffer_),
+                      buffer_);
             buffer_size_ -= n;
         }
     }
 
     const char* InputStreamWrapper::data() const
     {
-        return buffer_.data();
+        return buffer_;
     }
 
     size_t InputStreamWrapper::size() const
