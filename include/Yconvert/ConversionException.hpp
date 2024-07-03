@@ -22,14 +22,8 @@ namespace Yconvert
     class ConversionException : public YconvertException
     {
     public:
-        explicit ConversionException(const std::string& message,
-                                     size_t code_point_index) noexcept
-            : YconvertException(message),
-              code_point_offset(code_point_index)
-        {}
-
-        explicit ConversionException(const char* message,
-                                     size_t code_point_index) noexcept
+        ConversionException(const std::string& message,
+                            size_t code_point_index) noexcept
             : YconvertException(message),
               code_point_offset(code_point_index)
         {}
