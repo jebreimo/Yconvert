@@ -6,36 +6,52 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
+
 #include <iosfwd>
-#include <string>
+#include <memory>
+#include <string_view>
+#include "Yconvert/Encoding.hpp"
 
 namespace Yconvert
 {
-    class BufferIterator
+    class YCONVERT_API Iterator
     {
     public:
-        BufferIterator(const void* buffer, size_t size);
+        Iterator() = default;
 
-        bool next(char32_t* c);
+        Iterator(const void* buffer, size_t size, Encoding encoding);
+
+        template <typename CharType>
+        Iterator(const std::basic_string_view<CharType>& str, Encoding encoding)
+            : Iterator(str.data(), str.size() * sizeof(CharType), encoding)
+        {}
+
+        Iterator(std::istream& stream, Encoding encoding);
+
+        Iterator(const Iterator&) = delete;
+
+        Iterator(Iterator&&) noexcept;
+
+        ~Iterator();
+
+        Iterator& operator=(const Iterator&) = delete;
+
+        Iterator& operator=(Iterator&&) noexcept;
+
+        bool next(char32_t* c)
+        {
+            if (i_ == chars_.size() && !fill_buffer())
+                return false;
+
+            *c = chars_[i_++];
+            return true;
+        }
     private:
-        const char* m_Buffer;
-        size_t m_Size;
-    };
+        bool fill_buffer();
 
-    class StreamIterator
-    {
-    public:
-        StreamIterator(std::istream& stream);
-
-        bool next(char32_t* c);
-    };
-
-    template <typename CharType>
-    class StringIterator
-    {
-    public:
-        StringIterator(const std::basic_string<CharType>& str);
-
-        bool next(char32_t* c);
+        std::u32string_view chars_;
+        size_t i_ = 0;
+        struct Data;
+        std::unique_ptr<Data> data_;
     };
 }
