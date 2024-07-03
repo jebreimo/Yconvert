@@ -99,7 +99,7 @@ namespace Yconvert
         void operator++()
         {
             if (!is_end_)
-                is_end_ = !iterator_->next();
+                is_end_ = !iterator_->next(&character_);
         }
 
         const char32_t& operator*() const
