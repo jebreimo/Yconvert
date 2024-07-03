@@ -15,13 +15,50 @@
 
 namespace Yconvert
 {
-    using Source = std::variant<std::istream*, std::span<const char>>;
+    namespace
+    {
+        struct StreamReader
+        {
+            explicit StreamReader(std::istream& stream)
+                : stream_(&stream)
+            {}
+
+            size_t read(char32_t* buffer, size_t size, const DecoderBase& decoder)
+            {
+                if (span_.size() < size)
+                {
+                    if (!span_.empty() && span_.data() != buffer_)
+                    {
+                        std::copy(span_.begin(), span_.end(), buffer_);
+                        span_ = {buffer_, span_.size()};
+                    }
+
+                    stream_->read(buffer_ + span_.size(),
+                                  std::streamsize(sizeof(buffer_) - span_.size()));
+                    span_ = {buffer_, static_cast<size_t>(span_.size() + stream_->gcount())};
+                }
+
+                auto [read, written] = decoder.decode(span_.data(), span_.size(),
+                                                  buffer, size);
+                span_ = span_.subspan(read);
+                return written;
+            }
+
+            std::istream* stream_;
+            char buffer_[1024];
+            std::span<char> span_;
+        };
+
+        using Source = std::variant<std::istream*, std::span<const char>>;
+    }
 
     struct Iterator::Data
     {
         Source source;
         char32_t buffer[256];
         size_t buffer_size = 0;
+        char io_buffer[1024];
+        std::span<char> io_span;
         std::unique_ptr<DecoderBase> decoder;
     };
 
