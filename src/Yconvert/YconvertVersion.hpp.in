@@ -34,3 +34,39 @@ constexpr unsigned YCONVERT_VERSION_MINOR = @Yconvert_VERSION_MINOR@;
  *      its interface.
  */
 constexpr unsigned YCONVERT_VERSION_PATCH = @Yconvert_VERSION_PATCH@;
+
+/**
+ * @brief The ISO-8859 code pages are available if this is defined.
+ *
+ * This definition is controlled by CMake. Run CMake with
+ * -DYCONVERT_YCONVERT_ISO_CODE_PAGES=ON to enable it, and
+ * -DYCONVERT_YCONVERT_ISO_CODE_PAGES=OFF to disable it.
+*/
+#cmakedefine YCONVERT_ISO_CODE_PAGES
+
+/**
+ * @brief The DOS ("OEM") code pages are available if this is defined.
+ *
+ * This definition is controlled by CMake. Run CMake with
+ * -DYCONVERT_YCONVERT_DOS_CODE_PAGES=ON to enable it, and
+ * -DYCONVERT_YCONVERT_DOS_CODE_PAGES=OFF to disable it.
+*/
+#cmakedefine YCONVERT_DOS_CODE_PAGES
+
+/**
+ * @brief The Windows ("ANSI") code pages are available if this is defined.
+ *
+ * This definition is controlled by CMake. Run CMake with
+ * -DYCONVERT_YCONVERT_WIN_CODE_PAGES=ON to enable it, and
+ * -DYCONVERT_YCONVERT_WIN_CODE_PAGES=OFF to disable it.
+*/
+#cmakedefine YCONVERT_WIN_CODE_PAGES
+
+/**
+ * @brief The Mac code pages are available if this is defined.
+ *
+ * This definition is controlled by CMake. Run CMake with
+ * -DYCONVERT_YCONVERT_MAC_CODE_PAGES=ON to enable it, and
+ * -DYCONVERT_YCONVERT_MAC_CODE_PAGES=OFF to disable it.
+*/
+#cmakedefine YCONVERT_MAC_CODE_PAGES

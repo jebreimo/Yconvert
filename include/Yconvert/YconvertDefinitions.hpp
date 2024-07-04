@@ -7,6 +7,7 @@
 //****************************************************************************
 #pragma once
 #include <cstdint>
+#include "YconvertVersion.hpp"
 
 /** @file
   * @brief Defines constants and macros shared by all the other files

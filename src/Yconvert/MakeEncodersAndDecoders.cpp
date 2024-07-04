@@ -30,19 +30,19 @@ namespace Yconvert
         {
             if (encoding == Encoding::ASCII)
                 return {&ASCII_CHARS, 1};
-            #ifdef YCONVERT_ENABLE_ISO_CODE_PAGES
+            #ifdef YCONVERT_ISO_CODE_PAGES
             if ((unsigned(encoding) & unsigned(Encoding::ISO_8859_1)) != 0)
                 return get_iso_code_page_ranges(encoding);
             #endif
-            #ifdef YCONVERT_ENABLE_MAC_CODE_PAGES
+            #ifdef YCONVERT_MAC_CODE_PAGES
             if ((unsigned(encoding) & unsigned(Encoding::MAC_CYRILLIC)) != 0)
                     return get_iso_code_page_ranges(encoding);
             #endif
-            #ifdef YCONVERT_ENABLE_DOS_CODE_PAGES
+            #ifdef YCONVERT_DOS_CODE_PAGES
             if ((unsigned(encoding) & unsigned(Encoding::DOS_CP437)) != 0)
                 return get_iso_code_page_ranges(encoding);
             #endif
-            #ifdef YCONVERT_ENABLE_WIN_CODE_PAGES
+            #ifdef YCONVERT_WIN_CODE_PAGES
             if ((unsigned(encoding) & unsigned(Encoding::WIN_CP1250)) != 0)
                 return get_iso_code_page_ranges(encoding);
             #endif
