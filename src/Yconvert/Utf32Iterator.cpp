@@ -6,9 +6,7 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Yconvert/Utf32Iterator.hpp"
-#include <array>
 #include <istream>
-#include <span>
 #include <variant>
 #include "Yconvert/Details/InputStreamWrapper.hpp"
 #include "MakeEncodersAndDecoders.hpp"
@@ -28,7 +26,7 @@ namespace Yconvert
             size_t read(char32_t* buffer, size_t size, const DecoderBase& decoder)
             {
                 auto [read, written] = decoder.decode(input_.data(), input_.size(),
-                                                      buffer, size);
+                                                      buffer, size, input_.eof());
                 input_.drain(read);
                 if (written < size && !input_.eof())
                 {
@@ -36,10 +34,16 @@ namespace Yconvert
                     if (read == 0)
                         return 0;
                     std::tie(read, written) = decoder.decode(input_.data(), input_.size(),
-                                                             buffer + written, size - written);
+                                                             buffer + written, size - written,
+                                                             input_.eof());
                     input_.drain(read);
                 }
                 return written;
+            }
+
+            [[nodiscard]] bool is_complete() const
+            {
+                return input_.eof();
             }
 
             Details::InputStreamWrapper input_;

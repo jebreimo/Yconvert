@@ -9,6 +9,7 @@
 
 #include <iosfwd>
 #include <memory>
+#include <span>
 #include <string_view>
 #include "Yconvert/Encoding.hpp"
 #include "ErrorPolicy.hpp"
@@ -25,7 +26,16 @@ namespace Yconvert
                       ErrorPolicy error_policy = ErrorPolicy::REPLACE);
 
         template <typename CharType>
-        Utf32Iterator(const std::basic_string_view<CharType>& str,
+        Utf32Iterator(std::basic_string_view<CharType> str,
+                      Encoding encoding,
+                      ErrorPolicy error_policy = ErrorPolicy::REPLACE)
+            : Utf32Iterator(str.data(), str.size() * sizeof(CharType),
+                            encoding,
+                            error_policy)
+        {}
+
+        template <typename CharType>
+        Utf32Iterator(std::span<CharType> str,
                       Encoding encoding,
                       ErrorPolicy error_policy = ErrorPolicy::REPLACE)
             : Utf32Iterator(str.data(), str.size() * sizeof(CharType),
@@ -35,7 +45,7 @@ namespace Yconvert
 
         Utf32Iterator(std::istream& stream,
                       Encoding encoding,
-                      ErrorPolicy error_policy);
+                      ErrorPolicy error_policy = ErrorPolicy::REPLACE);
 
         Utf32Iterator(const Utf32Iterator&) = delete;
 
