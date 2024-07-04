@@ -108,6 +108,7 @@ namespace Yconvert
           i_(other.i_),
           data_(std::move(other.data_))
     {
+        other.chars_ = {};
         other.i_ = 0;
     }
 
@@ -115,9 +116,13 @@ namespace Yconvert
 
     Utf32Iterator& Utf32Iterator::operator=(Utf32Iterator&& other) noexcept
     {
+        if (this == &other)
+            return *this;
+
         chars_ = other.chars_;
         i_ = other.i_;
         data_ = std::move(other.data_);
+        other.chars_ = {};
         other.i_ = 0;
         return *this;
     }
