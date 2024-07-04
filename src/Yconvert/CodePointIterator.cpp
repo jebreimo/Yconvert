@@ -5,7 +5,7 @@
 // This file is distributed under the BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
-#include "Yconvert/Utf32Iterator.hpp"
+#include "Yconvert/CodePointIterator.hpp"
 #include <istream>
 #include <variant>
 #include "Yconvert/Details/InputStreamWrapper.hpp"
@@ -68,7 +68,7 @@ namespace Yconvert
         using Source = std::variant<StreamReader, BufferReader>;
     }
 
-    struct Utf32Iterator::Data
+    struct CodePointIterator::Data
     {
         explicit Data(std::span<const char> buffer) // NOLINT(*-pro-type-member-init)
             : source(BufferReader(buffer))
@@ -83,27 +83,27 @@ namespace Yconvert
         std::unique_ptr<DecoderBase> decoder;
     };
 
-    Utf32Iterator::Utf32Iterator() = default;
+    CodePointIterator::CodePointIterator() = default;
 
-    Utf32Iterator::Utf32Iterator(const void* buffer, size_t size,
-                                 Encoding encoding,
-                                 ErrorPolicy error_policy)
+    CodePointIterator::CodePointIterator(const void* buffer, size_t size,
+                                         Encoding encoding,
+                                         ErrorPolicy error_policy)
         : data_(std::make_unique<Data>(std::span{static_cast<const char*>(buffer), size}))
     {
         data_->decoder = make_decoder(encoding);
         data_->decoder->set_error_policy(error_policy);
     }
 
-    Utf32Iterator::Utf32Iterator(std::istream& stream,
-                                 Encoding encoding,
-                                 ErrorPolicy error_policy)
+    CodePointIterator::CodePointIterator(std::istream& stream,
+                                         Encoding encoding,
+                                         ErrorPolicy error_policy)
         : data_(std::make_unique<Data>(stream))
     {
         data_->decoder = make_decoder(encoding);
         data_->decoder->set_error_policy(error_policy);
     }
 
-    Utf32Iterator::Utf32Iterator(Utf32Iterator&& other) noexcept
+    CodePointIterator::CodePointIterator(CodePointIterator&& other) noexcept
         : chars_(other.chars_),
           i_(other.i_),
           data_(std::move(other.data_))
@@ -112,9 +112,9 @@ namespace Yconvert
         other.i_ = 0;
     }
 
-    Utf32Iterator::~Utf32Iterator() = default;
+    CodePointIterator::~CodePointIterator() = default;
 
-    Utf32Iterator& Utf32Iterator::operator=(Utf32Iterator&& other) noexcept
+    CodePointIterator& CodePointIterator::operator=(CodePointIterator&& other) noexcept
     {
         if (this == &other)
             return *this;
@@ -127,7 +127,7 @@ namespace Yconvert
         return *this;
     }
 
-    bool Utf32Iterator::fill_buffer()
+    bool CodePointIterator::fill_buffer()
     {
         if (!data_)
             return false;
@@ -144,7 +144,7 @@ namespace Yconvert
                 return reader.read(data.buffer, std::size(data.buffer), *data.decoder);
             }
 
-            Utf32Iterator::Data& data;
+            CodePointIterator::Data& data;
         };
 
         auto size = std::visit(Visitor{*data_}, data_->source);

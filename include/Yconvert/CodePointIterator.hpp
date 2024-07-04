@@ -16,47 +16,70 @@
 
 namespace Yconvert
 {
-    class YCONVERT_API Utf32Iterator
+    /**
+     * @brief An iterator that reads code points from a buffer or stream.
+     *
+     * The iterator reads code points from a buffer or stream and returns
+     * them as 32-bit Unicode code points. The buffer or stream is assumed
+     * to contain text encoded in a specific encoding. The iterator will
+     * convert the text to Unicode code points as it reads it.
+     *
+     * The iterator can be used in range-based for loops, e.g.:
+     * @code
+     * std::string text = "Hello, world!";
+     * for (char32_t c : CodePointIterator(text, Encoding::UTF8))
+     * {
+     *    // Do something with c...
+     * }
+     * @endcode
+     */
+    class YCONVERT_API CodePointIterator
     {
     public:
-        Utf32Iterator();
+        CodePointIterator();
 
-        Utf32Iterator(const void* buffer, size_t size,
-                      Encoding encoding,
-                      ErrorPolicy error_policy = ErrorPolicy::REPLACE);
+        CodePointIterator(const void* buffer, size_t size,
+                          Encoding encoding,
+                          ErrorPolicy error_policy = ErrorPolicy::REPLACE);
 
         template <typename CharType>
-        Utf32Iterator(std::basic_string_view<CharType> str,
-                      Encoding encoding,
-                      ErrorPolicy error_policy = ErrorPolicy::REPLACE)
-            : Utf32Iterator(str.data(), str.size() * sizeof(CharType),
-                            encoding,
-                            error_policy)
+        CodePointIterator(std::basic_string_view<CharType> str,
+                          Encoding encoding,
+                          ErrorPolicy error_policy = ErrorPolicy::REPLACE)
+            : CodePointIterator(str.data(), str.size() * sizeof(CharType),
+                                encoding,
+                                error_policy)
         {}
 
         template <typename CharType>
-        Utf32Iterator(std::span<CharType> str,
-                      Encoding encoding,
-                      ErrorPolicy error_policy = ErrorPolicy::REPLACE)
-            : Utf32Iterator(str.data(), str.size() * sizeof(CharType),
-                            encoding,
-                            error_policy)
+        CodePointIterator(std::span<CharType> str,
+                          Encoding encoding,
+                          ErrorPolicy error_policy = ErrorPolicy::REPLACE)
+            : CodePointIterator(str.data(), str.size() * sizeof(CharType),
+                                encoding,
+                                error_policy)
         {}
 
-        Utf32Iterator(std::istream& stream,
-                      Encoding encoding,
-                      ErrorPolicy error_policy = ErrorPolicy::REPLACE);
+        CodePointIterator(std::istream& stream,
+                          Encoding encoding,
+                          ErrorPolicy error_policy = ErrorPolicy::REPLACE);
 
-        Utf32Iterator(const Utf32Iterator&) = delete;
+        CodePointIterator(const CodePointIterator&) = delete;
 
-        Utf32Iterator(Utf32Iterator&&) noexcept;
+        CodePointIterator(CodePointIterator&&) noexcept;
 
-        ~Utf32Iterator();
+        ~CodePointIterator();
 
-        Utf32Iterator& operator=(const Utf32Iterator&) = delete;
+        CodePointIterator& operator=(const CodePointIterator&) = delete;
 
-        Utf32Iterator& operator=(Utf32Iterator&&) noexcept;
+        CodePointIterator& operator=(CodePointIterator&&) noexcept;
 
+        /**
+         * @brief Returns the next code point in the buffer or stream.
+         * @param c Receives the next code point.
+         * @return True if a code point was read, false if the end of the
+         *    buffer or stream was reached.
+         */
         bool next(char32_t* c)
         {
             if (i_ == chars_.size() && !fill_buffer())
@@ -76,10 +99,10 @@ namespace Yconvert
 
 
     /**
-     * @brief Adapts a Utf32Iterator to be used in range-based for loops.
+     * @brief Adapts a CodePointIterator to be used in range-based for loops.
      *
      * This class is not intended to be used directly, use the begin() and
-     * end() functions on Utf32Iterator instead.
+     * end() functions on CodePointIterator instead.
      */
     class Utf32InputIteratorAdapter
     {
@@ -92,7 +115,7 @@ namespace Yconvert
 
         Utf32InputIteratorAdapter() = default;
 
-        explicit Utf32InputIteratorAdapter(Utf32Iterator& iterator)
+        explicit Utf32InputIteratorAdapter(CodePointIterator& iterator)
             : iterator_(&iterator),
               is_end_(!iterator_->next(&character_))
         {}
@@ -125,7 +148,7 @@ namespace Yconvert
         friend bool operator==(const Utf32InputIteratorAdapter& lhs,
                                const Utf32InputIteratorAdapter& rhs);
 
-        Utf32Iterator* iterator_ = nullptr;
+        CodePointIterator* iterator_ = nullptr;
         char32_t character_ = {};
         bool is_end_ = true;
     };
@@ -142,12 +165,12 @@ namespace Yconvert
         return !(lhs == rhs);
     }
 
-    inline auto begin(Utf32Iterator& iterator)
+    inline auto begin(CodePointIterator& iterator)
     {
         return Utf32InputIteratorAdapter(iterator);
     }
 
-    inline auto end(const Utf32Iterator&)
+    inline auto end(const CodePointIterator&)
     {
         return Utf32InputIteratorAdapter();
     }
