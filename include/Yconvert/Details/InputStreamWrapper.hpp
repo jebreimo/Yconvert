@@ -54,6 +54,7 @@ namespace Yconvert::Details
     private:
         std::istream* stream_;
         char buffer_[Yconvert::BUFFER_SIZE];
-        size_t buffer_size_ = 0;
+        size_t size_ = 0;
+        size_t offset_ = 0;
     };
 }
