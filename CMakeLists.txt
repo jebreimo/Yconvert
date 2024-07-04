@@ -6,7 +6,7 @@
 ## License text is included with the source distribution.
 ##****************************************************************************
 cmake_minimum_required(VERSION 3.16)
-project(Yconvert VERSION 0.3.0)
+project(Yconvert VERSION 0.4.0)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -42,6 +42,7 @@ endfunction()
 configure_file(src/Yconvert/YconvertVersion.hpp.in YconvertVersion.hpp @ONLY)
 
 add_library(Yconvert
+    include/Yconvert/CodePointIterator.hpp
     include/Yconvert/Convert.hpp
     include/Yconvert/Converter.hpp
     include/Yconvert/ConversionException.hpp
@@ -55,6 +56,9 @@ add_library(Yconvert
     src/Yconvert/CodePageDecoder.cpp
     src/Yconvert/CodePageDecoder.hpp
     src/Yconvert/CodePageDefinitions.hpp
+    src/Yconvert/CodePageEncoder.cpp
+    src/Yconvert/CodePageEncoder.hpp
+    src/Yconvert/CodePointIterator.cpp
     src/Yconvert/Convert.cpp
     src/Yconvert/Converter.cpp
     src/Yconvert/DecoderBase.cpp
@@ -71,10 +75,8 @@ add_library(Yconvert
     src/Yconvert/Utf8Encoder.hpp
     src/Yconvert/Utf16Decoder.hpp
     src/Yconvert/Utf16Encoder.hpp
-    src/Yconvert/Utf32Encoder.hpp
     src/Yconvert/Utf32Decoder.hpp
-    src/Yconvert/CodePageEncoder.cpp
-    src/Yconvert/CodePageEncoder.hpp
+    src/Yconvert/Utf32Encoder.hpp
     src/Yconvert/YconvertThrow.hpp
     src/Yconvert/Details/InputStreamWrapper.cpp
 )

@@ -7,6 +7,7 @@
 //****************************************************************************
 #pragma once
 
+#include "CodePointIterator.hpp"
 #include "ConversionException.hpp"
 #include "Convert.hpp"
 #include "EncodingChecker.hpp"

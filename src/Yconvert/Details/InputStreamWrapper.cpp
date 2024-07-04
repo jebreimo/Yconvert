@@ -6,6 +6,7 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #include "Yconvert/Details/InputStreamWrapper.hpp"
+#include "Yconvert/YconvertThrow.hpp"
 #include <istream>
 
 namespace Yconvert::Details
@@ -16,34 +17,40 @@ namespace Yconvert::Details
 
     bool InputStreamWrapper::fill()
     {
-        stream_->read(buffer_ + buffer_size_,
-                      std::streamsize(sizeof(buffer_) - buffer_size_));
-        buffer_size_ += stream_->gcount();
-        return buffer_size_ != 0;
+        if (offset_ != 0 && size_ != 0)
+        {
+            std::copy(buffer_ + ptrdiff_t(offset_),
+                      buffer_ + ptrdiff_t(offset_ + size_),
+                      buffer_);
+        }
+        offset_ = 0;
+        stream_->read(buffer_ + size_,
+                      std::streamsize(sizeof(buffer_) - size_));
+        size_ += stream_->gcount();
+        return size_ != 0;
     }
 
     void InputStreamWrapper::drain(size_t n)
     {
-        if (n == buffer_size_)
+        if (n > size_)
         {
-            buffer_size_ = 0;
+            YCONVERT_THROW("Trying to drain more bytes (" + std::to_string(n)
+                           + ") than are available (" + std::to_string(size_)
+                           + ").");
         }
-        else if (n < buffer_size_)
-        {
-            std::copy(buffer_ + ptrdiff_t(n), std::end(buffer_),
-                      buffer_);
-            buffer_size_ -= n;
-        }
+
+        offset_ += n;
+        size_ -= n;
     }
 
     const char* InputStreamWrapper::data() const
     {
-        return buffer_;
+        return buffer_ + offset_;
     }
 
     size_t InputStreamWrapper::size() const
     {
-        return buffer_size_;
+        return size_;
     }
 
     bool InputStreamWrapper::eof() const

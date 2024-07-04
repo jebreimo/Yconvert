@@ -16,22 +16,14 @@
 namespace Yconvert
 {
     /**
-     * @brief The exception class used throughout Yconvert.
+     * @brief Exception class that includes the offset of the character in
+     *  the input where the conversion failed.
      */
     class ConversionException : public YconvertException
     {
     public:
-        /**
-         * @brief Passes @a message on to the base class.
-         */
-        explicit ConversionException(const std::string& message,
-                                     size_t code_point_index) noexcept
-            : YconvertException(message),
-              code_point_offset(code_point_index)
-        {}
-
-        explicit ConversionException(const char* message,
-                                     size_t code_point_index) noexcept
+        ConversionException(const std::string& message,
+                            size_t code_point_index) noexcept
             : YconvertException(message),
               code_point_offset(code_point_index)
         {}

@@ -19,14 +19,18 @@ if (NOT catch_POPULATED)
 endif ()
 
 add_executable(YconvertTest
+    test_CodePointIterator.cpp
+    test_Convert.cpp
     test_Converter.cpp
+    test_Encoding.cpp
     test_Endian.cpp
     test_Utf8Decoder.cpp
     test_Utf8Encoder.cpp
     test_Utf16Decoder.cpp
     test_Utf16Encoder.cpp
     test_Utf32Encoder.cpp
-    test_Utf32Decoder.cpp test_Encoding.cpp test_Convert.cpp)
+    test_Utf32Decoder.cpp
+)
 
 target_link_libraries(YconvertTest
     PRIVATE
