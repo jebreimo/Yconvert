@@ -50,7 +50,7 @@ namespace Yconvert
     }
 
     Utf8Encoder::Utf8Encoder()
-        : EncoderBase(Encoding::UTF_8)
+        : Encoder(Encoding::UTF_8)
     {}
 
     size_t Utf8Encoder::get_encoded_size(const char32_t* src, size_t src_size)

@@ -6,7 +6,7 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-#include "EncoderBase.hpp"
+#include "Encoder.hpp"
 
 #include <iterator>
 #include <ostream>
@@ -66,11 +66,11 @@ namespace Yconvert
     }
 
     template <bool SWAP_BYTES>
-    class Utf16Encoder : public EncoderBase
+    class Utf16Encoder : public Encoder
     {
     public:
         Utf16Encoder()
-            : EncoderBase(IS_BIG_ENDIAN == SWAP_BYTES
+            : Encoder(IS_BIG_ENDIAN == SWAP_BYTES
                           ? Encoding::UTF_16_LE
                           : Encoding::UTF_16_BE)
         {}

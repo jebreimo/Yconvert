@@ -21,8 +21,8 @@
 
 namespace Yconvert
 {
-    class DecoderBase;
-    class EncoderBase;
+    class Decoder;
+    class Encoder;
 
     /** @brief Converts strings from one encoding to another.
       */
@@ -147,8 +147,8 @@ namespace Yconvert
         size_t copy_and_swap(const void* src, size_t src_size,
                              std::ostream& stream);
 
-        std::unique_ptr<DecoderBase> decoder_;
-        std::unique_ptr<EncoderBase> encoder_;
+        std::unique_ptr<Decoder> decoder_;
+        std::unique_ptr<Encoder> encoder_;
         ConversionType conversion_type_;
         std::vector<char32_t> buffer_;
     };

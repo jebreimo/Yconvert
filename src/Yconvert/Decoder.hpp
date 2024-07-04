@@ -13,10 +13,10 @@
 
 namespace Yconvert
 {
-    class DecoderBase
+    class Decoder
     {
     public:
-        virtual ~DecoderBase() = default;
+        virtual ~Decoder() = default;
 
         [[nodiscard]]
         Encoding encoding() const;
@@ -45,7 +45,7 @@ namespace Yconvert
         virtual std::pair<size_t, size_t>
         count_valid_codepoints(const void* src, size_t src_size) const = 0;
     protected:
-        explicit DecoderBase(Encoding encoding);
+        explicit Decoder(Encoding encoding);
 
         virtual size_t
         skip_codepoint(const void* src, size_t src_size) const = 0;

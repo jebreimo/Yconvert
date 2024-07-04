@@ -6,11 +6,11 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-#include "DecoderBase.hpp"
+#include "Decoder.hpp"
 
 namespace Yconvert
 {
-    class Utf8Decoder : public DecoderBase
+    class Utf8Decoder : public Decoder
     {
     public:
         Utf8Decoder();

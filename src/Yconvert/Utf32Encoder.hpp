@@ -6,7 +6,7 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-#include "EncoderBase.hpp"
+#include "Encoder.hpp"
 
 #include <iterator>
 #include <ostream>
@@ -27,11 +27,11 @@ namespace Yconvert
     }
 
     template <bool SWAP_BYTES>
-    class Utf32Encoder : public EncoderBase
+    class Utf32Encoder : public Encoder
     {
     public:
         Utf32Encoder()
-            : EncoderBase(IS_BIG_ENDIAN == SWAP_BYTES
+            : Encoder(IS_BIG_ENDIAN == SWAP_BYTES
                           ? Encoding::UTF_32_LE
                           : Encoding::UTF_32_BE)
         {}

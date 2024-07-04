@@ -5,38 +5,38 @@
 // This file is distributed under the BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
-#include "EncoderBase.hpp"
+#include "Encoder.hpp"
 
 namespace Yconvert
 {
 
-    EncoderBase::EncoderBase(Encoding encoding)
+    Encoder::Encoder(Encoding encoding)
         : encoding_(encoding),
           error_policy_(),
           replacement_character_(REPLACEMENT_CHARACTER)
     {}
 
-    Encoding EncoderBase::encoding() const
+    Encoding Encoder::encoding() const
     {
         return encoding_;
     }
 
-    ErrorPolicy EncoderBase::error_policy() const
+    ErrorPolicy Encoder::error_policy() const
     {
         return error_policy_;
     }
 
-    void EncoderBase::set_error_policy(ErrorPolicy policy)
+    void Encoder::set_error_policy(ErrorPolicy policy)
     {
         error_policy_ = policy;
     }
 
-    char32_t EncoderBase::replacement_character() const
+    char32_t Encoder::replacement_character() const
     {
         return replacement_character_;
     }
 
-    void EncoderBase::set_replacement_character(char32_t value)
+    void Encoder::set_replacement_character(char32_t value)
     {
         replacement_character_ = value;
     }

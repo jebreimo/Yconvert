@@ -23,7 +23,7 @@ namespace Yconvert
                 : input_(stream)
             {}
 
-            size_t read(char32_t* buffer, size_t size, const DecoderBase& decoder)
+            size_t read(char32_t* buffer, size_t size, const Decoder& decoder)
             {
                 auto [read, written] = decoder.decode(input_.data(), input_.size(),
                                                       buffer, size, input_.eof());
@@ -55,7 +55,7 @@ namespace Yconvert
                 : input_(buffer)
             {}
 
-            size_t read(char32_t* buffer, size_t size, const DecoderBase& decoder)
+            size_t read(char32_t* buffer, size_t size, const Decoder& decoder)
             {
                 auto [read, written] = decoder.decode(input_.data(), input_.size(),
                                                       buffer, size);
@@ -80,7 +80,7 @@ namespace Yconvert
 
         Source source;
         char32_t buffer[CHAR32_BUFFER_SIZE];
-        std::unique_ptr<DecoderBase> decoder;
+        std::unique_ptr<Decoder> decoder;
     };
 
     CodePointIterator::CodePointIterator() = default;

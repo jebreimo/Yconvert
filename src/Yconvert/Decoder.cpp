@@ -5,36 +5,36 @@
 // This file is distributed under the BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
-#include "DecoderBase.hpp"
+#include "Decoder.hpp"
 
 #include "Yconvert/ConversionException.hpp"
 
 namespace Yconvert
 {
-    DecoderBase::DecoderBase(Encoding encoding)
+    Decoder::Decoder(Encoding encoding)
         : encoding_(encoding),
           error_policy_()
     {}
 
-    Encoding DecoderBase::encoding() const
+    Encoding Decoder::encoding() const
     {
         return encoding_;
     }
 
-    ErrorPolicy DecoderBase::error_handling_policy() const
+    ErrorPolicy Decoder::error_handling_policy() const
     {
         return error_policy_;
     }
 
-    void DecoderBase::set_error_policy(ErrorPolicy policy)
+    void Decoder::set_error_policy(ErrorPolicy policy)
     {
         error_policy_ = policy;
     }
 
     std::pair<size_t, size_t>
-    DecoderBase::decode(const void* src, size_t src_size,
-                        char32_t* dst, size_t dst_size,
-                        bool src_is_final) const
+    Decoder::decode(const void* src, size_t src_size,
+                    char32_t* dst, size_t dst_size,
+                    bool src_is_final) const
     {
         size_t i_src = 0, i_dst = 0;
         auto bytes = static_cast<const char*>(src);

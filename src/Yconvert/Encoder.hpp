@@ -12,10 +12,10 @@
 
 namespace Yconvert
 {
-    class EncoderBase
+    class Encoder
     {
     public:
-        virtual ~EncoderBase() = default;
+        virtual ~Encoder() = default;
 
         [[nodiscard]]
         Encoding encoding() const;
@@ -44,7 +44,7 @@ namespace Yconvert
         virtual void encode(const char32_t* src, size_t src_size,
                             std::ostream& dst) = 0;
     protected:
-        explicit EncoderBase(Encoding encoding);
+        explicit Encoder(Encoding encoding);
     private:
         Encoding encoding_;
         ErrorPolicy error_policy_;

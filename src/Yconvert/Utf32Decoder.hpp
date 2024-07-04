@@ -6,7 +6,7 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-#include "DecoderBase.hpp"
+#include "Decoder.hpp"
 
 namespace Yconvert
 {
@@ -50,11 +50,11 @@ namespace Yconvert
     }
 
     template <bool SWAP_BYTES>
-    class Utf32Decoder : public DecoderBase
+    class Utf32Decoder : public Decoder
     {
     public:
         Utf32Decoder()
-            : DecoderBase(IS_BIG_ENDIAN == SWAP_BYTES
+            : Decoder(IS_BIG_ENDIAN == SWAP_BYTES
                           ? Encoding::UTF_32_LE
                           : Encoding::UTF_32_BE)
         {}

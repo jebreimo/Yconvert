@@ -8,12 +8,12 @@
 #pragma once
 
 #include <memory>
-#include "DecoderBase.hpp"
-#include "EncoderBase.hpp"
+#include "Decoder.hpp"
+#include "Encoder.hpp"
 
 namespace Yconvert
 {
-    std::unique_ptr<DecoderBase> make_decoder(Encoding encoding);
+    std::unique_ptr<Decoder> make_decoder(Encoding encoding);
 
-    std::unique_ptr<EncoderBase> make_encoder(Encoding encoding);
+    std::unique_ptr<Encoder> make_encoder(Encoding encoding);
 }

@@ -11,7 +11,7 @@
 
 namespace Yconvert
 {
-    class DecoderBase;
+    class Decoder;
 
     class YCONVERT_API EncodingChecker
     {
@@ -40,6 +40,6 @@ namespace Yconvert
         [[nodiscard]]
         bool check_encoding(const void* buffer, size_t length) const;
     private:
-        std::unique_ptr<DecoderBase> decoder_;
+        std::unique_ptr<Decoder> decoder_;
     };
 }

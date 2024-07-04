@@ -12,7 +12,7 @@ namespace Yconvert
     CodePageDecoder::CodePageDecoder(Encoding encoding,
                                      const CodePageRange* ranges,
                                      size_t ranges_size)
-        : DecoderBase(encoding)
+        : Decoder(encoding)
     {
         std::fill(std::begin(chars_), std::end(chars_), INVALID_CHAR);
         char32_t upper = 0;

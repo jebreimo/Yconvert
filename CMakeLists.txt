@@ -61,10 +61,10 @@ add_library(Yconvert
     src/Yconvert/CodePointIterator.cpp
     src/Yconvert/Convert.cpp
     src/Yconvert/Converter.cpp
-    src/Yconvert/DecoderBase.cpp
-    src/Yconvert/DecoderBase.hpp
-    src/Yconvert/EncoderBase.hpp
-    src/Yconvert/EncoderBase.cpp
+    src/Yconvert/Decoder.cpp
+    src/Yconvert/Decoder.hpp
+    src/Yconvert/Encoder.hpp
+    src/Yconvert/Encoder.cpp
     src/Yconvert/Encoding.cpp
     src/Yconvert/EncodingChecker.cpp
     src/Yconvert/MakeEncodersAndDecoders.cpp

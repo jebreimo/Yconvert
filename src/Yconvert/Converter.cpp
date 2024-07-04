@@ -18,7 +18,7 @@ namespace Yconvert
 {
     namespace
     {
-        size_t find_nth_code_point(DecoderBase& decoder,
+        size_t find_nth_code_point(Decoder& decoder,
                                    const char* src, size_t src_size,
                                    std::vector<char32_t>& buf, size_t n)
         {

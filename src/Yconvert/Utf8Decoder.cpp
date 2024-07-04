@@ -94,7 +94,7 @@ namespace Yconvert
     }
 
     Utf8Decoder::Utf8Decoder()
-        : DecoderBase(Encoding::UTF_8)
+        : Decoder(Encoding::UTF_8)
     {}
 
     size_t Utf8Decoder::skip_codepoint(const void* src, size_t src_size) const

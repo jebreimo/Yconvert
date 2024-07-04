@@ -37,7 +37,7 @@ namespace Yconvert
     CodePageEncoder::CodePageEncoder(Encoding encoding,
                                      const CodePageRange* ranges,
                                      size_t ranges_size)
-        : EncoderBase(encoding)
+        : Encoder(encoding)
     {
         ranges_.reserve(ranges_size);
         char32_t upper = 0;
@@ -55,22 +55,22 @@ namespace Yconvert
             }
         }
         if (find_char(ranges_, REPLACEMENT_CHARACTER))
-            EncoderBase::set_replacement_character(REPLACEMENT_CHARACTER);
+            Encoder::set_replacement_character(REPLACEMENT_CHARACTER);
         else if (find_char(ranges_, '?'))
-            EncoderBase::set_replacement_character('?');
+            Encoder::set_replacement_character('?');
         else if (find_char(ranges_, ' '))
-            EncoderBase::set_replacement_character(' ');
+            Encoder::set_replacement_character(' ');
         else
             // Must set it to something. The first code point is a terrible
             // idea as it's most likely 0, but this is a non-issue for all
             // encodings this code will ever encounter.
-            EncoderBase::set_replacement_character(ranges[0].start_code_point);
+            Encoder::set_replacement_character(ranges[0].start_code_point);
     }
 
     void CodePageEncoder::set_replacement_character(char32_t value)
     {
         if (find_char(ranges_, value))
-            EncoderBase::set_replacement_character(value);
+            Encoder::set_replacement_character(value);
     }
 
     size_t CodePageEncoder::get_encoded_size(const char32_t* src, size_t src_size)

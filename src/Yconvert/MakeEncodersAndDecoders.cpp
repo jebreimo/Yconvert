@@ -49,23 +49,23 @@ namespace Yconvert
             return {nullptr, 0};
         }
 
-        std::unique_ptr<DecoderBase> make_code_page_decoder(Encoding encoding)
+        std::unique_ptr<Decoder> make_code_page_decoder(Encoding encoding)
         {
             auto [ranges, ranges_size] = get_code_page_ranges(encoding);
             if (ranges)
             {
-                return std::unique_ptr<DecoderBase>(new CodePageDecoder(
+                return std::unique_ptr<Decoder>(new CodePageDecoder(
                     encoding, ranges, ranges_size));
             }
             return {};
         }
 
-        std::unique_ptr<EncoderBase> make_code_page_encoder(Encoding encoding)
+        std::unique_ptr<Encoder> make_code_page_encoder(Encoding encoding)
         {
             auto [ranges, ranges_size] = get_code_page_ranges(encoding);
             if (ranges)
             {
-                return std::unique_ptr<EncoderBase>(new CodePageEncoder(
+                return std::unique_ptr<Encoder>(new CodePageEncoder(
                     encoding, ranges, ranges_size));
             }
             return {};
@@ -73,12 +73,12 @@ namespace Yconvert
 
     #else
 
-        std::unique_ptr<DecoderBase> make_code_page_decoder(Encoding)
+        std::unique_ptr<Decoder> make_code_page_decoder(Encoding)
         {
             return {};
         }
 
-        std::unique_ptr<EncoderBase> make_code_page_encoder(Encoding)
+        std::unique_ptr<Encoder> make_code_page_encoder(Encoding)
         {
             return {};
         }
@@ -86,20 +86,20 @@ namespace Yconvert
     #endif
     }
 
-    std::unique_ptr<DecoderBase> make_decoder(Encoding encoding)
+    std::unique_ptr<Decoder> make_decoder(Encoding encoding)
     {
         switch (encoding)
         {
         case Encoding::UTF_8:
-            return std::unique_ptr<DecoderBase>(new Utf8Decoder);
+            return std::unique_ptr<Decoder>(new Utf8Decoder);
         case Encoding::UTF_16_BE:
-            return std::unique_ptr<DecoderBase>(new Utf16BEDecoder);
+            return std::unique_ptr<Decoder>(new Utf16BEDecoder);
         case Encoding::UTF_16_LE:
-            return std::unique_ptr<DecoderBase>(new Utf16LEDecoder);
+            return std::unique_ptr<Decoder>(new Utf16LEDecoder);
         case Encoding::UTF_32_BE:
-            return std::unique_ptr<DecoderBase>(new Utf32BEDecoder);
+            return std::unique_ptr<Decoder>(new Utf32BEDecoder);
         case Encoding::UTF_32_LE:
-            return std::unique_ptr<DecoderBase>(new Utf32LEDecoder);
+            return std::unique_ptr<Decoder>(new Utf32LEDecoder);
         default:
             if (auto decoder = make_code_page_decoder(encoding))
                 return decoder;
@@ -110,20 +110,20 @@ namespace Yconvert
         YCONVERT_THROW("Unsupported decoder: " + std::string(info.name));
     }
 
-    std::unique_ptr<EncoderBase> make_encoder(Encoding encoding)
+    std::unique_ptr<Encoder> make_encoder(Encoding encoding)
     {
         switch (encoding)
         {
         case Encoding::UTF_8:
-            return std::unique_ptr<EncoderBase>(new Utf8Encoder);
+            return std::unique_ptr<Encoder>(new Utf8Encoder);
         case Encoding::UTF_16_BE:
-            return std::unique_ptr<EncoderBase>(new Utf16BEEncoder);
+            return std::unique_ptr<Encoder>(new Utf16BEEncoder);
         case Encoding::UTF_16_LE:
-            return std::unique_ptr<EncoderBase>(new Utf16LEEncoder);
+            return std::unique_ptr<Encoder>(new Utf16LEEncoder);
         case Encoding::UTF_32_BE:
-            return std::unique_ptr<EncoderBase>(new Utf32BEEncoder);
+            return std::unique_ptr<Encoder>(new Utf32BEEncoder);
         case Encoding::UTF_32_LE:
-            return std::unique_ptr<EncoderBase>(new Utf32LEEncoder);
+            return std::unique_ptr<Encoder>(new Utf32LEEncoder);
         default:
             if (auto encoder = make_code_page_encoder(encoding))
                 return encoder;

@@ -6,7 +6,7 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-#include "EncoderBase.hpp"
+#include "Encoder.hpp"
 
 #include <vector>
 #include "CodePageDefinitions.hpp"
@@ -20,7 +20,7 @@ namespace Yconvert
         uint8_t length;
     };
 
-    class CodePageEncoder : public EncoderBase
+    class CodePageEncoder : public Encoder
     {
     public:
         CodePageEncoder(Encoding encoding,

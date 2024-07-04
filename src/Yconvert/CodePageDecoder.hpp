@@ -6,13 +6,13 @@
 // License text is included with the source distribution.
 //****************************************************************************
 #pragma once
-#include "DecoderBase.hpp"
+#include "Decoder.hpp"
 
 #include "CodePageDefinitions.hpp"
 
 namespace Yconvert
 {
-    class CodePageDecoder : public DecoderBase
+    class CodePageDecoder : public Decoder
     {
     public:
         CodePageDecoder(Encoding encoding,
