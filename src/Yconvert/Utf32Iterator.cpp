@@ -30,13 +30,13 @@ namespace Yconvert
                 input_.drain(read);
                 if (written < size && !input_.eof())
                 {
-                    read = input_.fill();
-                    if (read == 0)
-                        return 0;
-                    std::tie(read, written) = decoder.decode(input_.data(), input_.size(),
-                                                             buffer + written, size - written,
-                                                             input_.eof());
-                    input_.drain(read);
+                    if (!input_.fill())
+                        return written;
+                    auto [r, w] = decoder.decode(input_.data(), input_.size(),
+                                                 buffer + written, size - written,
+                                                 input_.eof());
+                    written += w;
+                    input_.drain(r);
                 }
                 return written;
             }

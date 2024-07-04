@@ -49,7 +49,7 @@ TEST_CASE("Iterate over a stream")
     char32_t c;
     while (iter.next(&c))
     {
-        REQUIRE(c == n++);
+        REQUIRE(unsigned(c) == n++);
     }
     REQUIRE(n == 1 << 16);
 }
