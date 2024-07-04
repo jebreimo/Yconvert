@@ -32,6 +32,8 @@ namespace Yconvert
      *    // Do something with c...
      * }
      * @endcode
+     *
+     * @note This iterator does not support the range concept of std::ranges.
      */
     class YCONVERT_API CodePointIterator
     {
@@ -104,7 +106,7 @@ namespace Yconvert
      * This class is not intended to be used directly, use the begin() and
      * end() functions on CodePointIterator instead.
      */
-    class Utf32InputIteratorAdapter
+    class CodePointInputIteratorAdapter
     {
     public:
         typedef char32_t value_type;
@@ -113,16 +115,14 @@ namespace Yconvert
         typedef const value_type* pointer;
         typedef const value_type& reference;
 
-        Utf32InputIteratorAdapter() = default;
+        CodePointInputIteratorAdapter() = default;
 
-        explicit Utf32InputIteratorAdapter(CodePointIterator& iterator)
+        explicit CodePointInputIteratorAdapter(CodePointIterator& iterator)
             : iterator_(&iterator),
               is_end_(!iterator_->next(&character_))
         {}
 
-        Utf32InputIteratorAdapter(const Utf32InputIteratorAdapter&) = delete;
-
-        Utf32InputIteratorAdapter& operator++(int)
+        CodePointInputIteratorAdapter& operator++(int)
         {
             if (!is_end_)
                 is_end_ = !iterator_->next(&character_);
@@ -145,33 +145,33 @@ namespace Yconvert
             return &character_;
         }
     private:
-        friend bool operator==(const Utf32InputIteratorAdapter& lhs,
-                               const Utf32InputIteratorAdapter& rhs);
+        friend bool operator==(const CodePointInputIteratorAdapter& lhs,
+                               const CodePointInputIteratorAdapter& rhs);
 
         CodePointIterator* iterator_ = nullptr;
-        char32_t character_ = {};
+        char32_t character_ = INVALID_CHAR;
         bool is_end_ = true;
     };
 
-    inline bool operator==(const Utf32InputIteratorAdapter& lhs,
-                           const Utf32InputIteratorAdapter& rhs)
+    inline bool operator==(const CodePointInputIteratorAdapter& lhs,
+                           const CodePointInputIteratorAdapter& rhs)
     {
         return lhs.iterator_ == rhs.iterator_ || lhs.is_end_ == rhs.is_end_;
     }
 
-    inline bool operator!=(const Utf32InputIteratorAdapter& lhs,
-                           const Utf32InputIteratorAdapter& rhs)
+    inline bool operator!=(const CodePointInputIteratorAdapter& lhs,
+                           const CodePointInputIteratorAdapter& rhs)
     {
         return !(lhs == rhs);
     }
 
     inline auto begin(CodePointIterator& iterator)
     {
-        return Utf32InputIteratorAdapter(iterator);
+        return CodePointInputIteratorAdapter(iterator);
     }
 
     inline auto end(const CodePointIterator&)
     {
-        return Utf32InputIteratorAdapter();
+        return CodePointInputIteratorAdapter();
     }
 }
