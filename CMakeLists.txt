@@ -2,11 +2,11 @@
 ## Copyright © 2020 Jan Erik Breimo. All rights reserved.
 ## Created by Jan Erik Breimo on 2020-05-04.
 ##
-## This file is distributed under the Simplified BSD License.
+## This file is distributed under the Zero-Clause BSD License.
 ## License text is included with the source distribution.
 ##****************************************************************************
 cmake_minimum_required(VERSION 3.16)
-project(Yconvert VERSION 0.4.0)
+project(Yconvert VERSION 0.4.1)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -36,7 +36,7 @@ function(yconvert_target_enable_all_warnings target)
             $<$<CXX_COMPILER_ID:GNU>:-Wall>
             $<$<CXX_COMPILER_ID:AppleClang>:-Wall>
             $<$<CXX_COMPILER_ID:MSVC>:/W4>
-        )
+    )
 endfunction()
 
 configure_file(src/Yconvert/YconvertVersion.hpp.in YconvertVersion.hpp @ONLY)
@@ -88,12 +88,12 @@ target_include_directories(Yconvert BEFORE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
-    )
+)
 
 target_compile_definitions(Yconvert
     PRIVATE
         $<$<CXX_COMPILER_ID:MSVC>:NOMINMAX>
-    )
+)
 
 yconvert_target_enable_all_warnings(Yconvert)
 
@@ -106,14 +106,15 @@ endif()
 
 export(TARGETS Yconvert
     NAMESPACE Yconvert::
-    FILE YconvertConfig.cmake)
+    FILE YconvertConfig.cmake
+)
 
 if (YCONVERT_INSTALL)
     install(TARGETS Yconvert
         EXPORT YconvertConfig
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        )
+    )
 
     install(EXPORT YconvertConfig
         FILE
@@ -122,7 +123,7 @@ if (YCONVERT_INSTALL)
             Yconvert::
         DESTINATION
             ${CMAKE_INSTALL_LIBDIR}/cmake/Yconvert
-        )
+    )
 
     file(GLOB_RECURSE PUBLIC_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
     install(
@@ -137,12 +138,12 @@ if (YCONVERT_INSTALL)
 
     write_basic_package_version_file(YconvertConfigVersion.cmake
         COMPATIBILITY SameMajorVersion
-        )
+    )
 
     install(
         FILES
             ${CMAKE_CURRENT_BINARY_DIR}/YconvertConfigVersion.cmake
         DESTINATION
             ${CMAKE_INSTALL_LIBDIR}/cmake/Yconvert
-        )
+    )
 endif ()
