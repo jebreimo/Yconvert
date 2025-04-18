@@ -23,11 +23,11 @@ namespace Yconvert
     {
     public:
         ConversionException(const std::string& message,
-                            size_t code_point_index) noexcept
+                            size_t codepoint_index) noexcept
             : YconvertException(message),
-              code_point_offset(code_point_index)
+              codepoint_offset(codepoint_index)
         {}
 
-        size_t code_point_offset;
+        size_t codepoint_offset;
     };
 }

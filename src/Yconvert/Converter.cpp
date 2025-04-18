@@ -340,7 +340,7 @@ namespace Yconvert
         }
         catch (ConversionException& ex)
         {
-            ex.code_point_offset += code_point_offset;
+            ex.codepoint_offset += code_point_offset;
             throw;
         }
         return {src_size_0 - src_size, dst_size_0 - dst_size};
