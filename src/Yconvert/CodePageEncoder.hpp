@@ -15,7 +15,7 @@ namespace Yconvert
 {
     struct CodePointMapRange
     {
-        char32_t code_point;
+        char32_t codepoint;
         uint8_t index;
         uint8_t length;
     };

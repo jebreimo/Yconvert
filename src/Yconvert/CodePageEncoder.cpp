@@ -22,11 +22,11 @@ namespace Yconvert
             auto it = std::upper_bound(
                 ranges.begin(), ranges.end(),
                 CodePointMapRange{c, 0, 0},
-                [](auto& a, auto& b){return a.code_point < b.code_point;});
+                [](auto& a, auto& b){return a.codepoint < b.codepoint;});
             if (it != ranges.begin())
             {
                 --it;
-                auto offset = c - it->code_point;
+                auto offset = c - it->codepoint;
                 if (offset <= it->length)
                     return char(it->index + offset);
             }

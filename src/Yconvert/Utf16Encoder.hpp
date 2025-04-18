@@ -24,39 +24,39 @@ namespace Yconvert
         }
 
         template <bool SWAP_BYTES, typename OutIt>
-        void add_utf16_bytes(char32_t code_point, OutIt out)
+        void add_utf16_bytes(char32_t codepoint, OutIt out)
         {
-            if (code_point <= 0xFFFF)
+            if (codepoint <= 0xFFFF)
             {
-                Detail::add_bytes<SWAP_BYTES>(char16_t(code_point), out);
+                Detail::add_bytes<SWAP_BYTES>(char16_t(codepoint), out);
             }
-            else if (code_point <= UNICODE_MAX)
+            else if (codepoint <= UNICODE_MAX)
             {
-                code_point -= 0x10000;
-                auto word1 = char16_t(0xD800u | (code_point >> 10u));
-                auto word2 = char16_t(0xDC00u | (code_point & 0x3FFu));
+                codepoint -= 0x10000;
+                auto word1 = char16_t(0xD800u | (codepoint >> 10u));
+                auto word2 = char16_t(0xDC00u | (codepoint & 0x3FFu));
                 Detail::add_bytes<SWAP_BYTES>(word1, out);
                 Detail::add_bytes<SWAP_BYTES>(word2, out);
             }
         }
 
         template <bool SWAP_BYTES, typename T>
-        size_t encode_utf16(char32_t code_point, T* data, size_t n)
+        size_t encode_utf16(char32_t codepoint, T* data, size_t n)
         {
-            if (code_point <= 0xFFFF)
+            if (codepoint <= 0xFFFF)
             {
                 if (n < 2)
                     return 0;
-                Detail::add_bytes<SWAP_BYTES>(char16_t(code_point), data);
+                Detail::add_bytes<SWAP_BYTES>(char16_t(codepoint), data);
                 return 2;
             }
-            else if (code_point <= UNICODE_MAX)
+            else if (codepoint <= UNICODE_MAX)
             {
                 if (n < 4)
                     return 0;
-                code_point -= 0x10000;
-                auto word1 = char16_t(0xD800u | (code_point >> 10u));
-                auto word2 = char16_t(0xDC00u | (code_point & 0x3FFu));
+                codepoint -= 0x10000;
+                auto word1 = char16_t(0xD800u | (codepoint >> 10u));
+                auto word2 = char16_t(0xDC00u | (codepoint & 0x3FFu));
                 Detail::add_bytes<SWAP_BYTES>(word1, data);
                 Detail::add_bytes<SWAP_BYTES>(word2, data);
                 return 4;
