@@ -15,7 +15,7 @@ FetchContent_Declare(catch
 FetchContent_MakeAvailable(catch)
 
 add_executable(YconvertTest
-    test_CodePointIterator.cpp
+    test_CodepointIterator.cpp
     test_Convert.cpp
     test_Converter.cpp
     test_Encoding.cpp

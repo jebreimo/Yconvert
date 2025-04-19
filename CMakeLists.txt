@@ -42,7 +42,7 @@ endfunction()
 configure_file(src/Yconvert/YconvertVersion.hpp.in YconvertVersion.hpp @ONLY)
 
 add_library(Yconvert
-    include/Yconvert/CodePointIterator.hpp
+    include/Yconvert/CodepointIterator.hpp
     include/Yconvert/Convert.hpp
     include/Yconvert/Converter.hpp
     include/Yconvert/ConversionException.hpp
@@ -58,7 +58,7 @@ add_library(Yconvert
     src/Yconvert/CodePageDefinitions.hpp
     src/Yconvert/CodePageEncoder.cpp
     src/Yconvert/CodePageEncoder.hpp
-    src/Yconvert/CodePointIterator.cpp
+    src/Yconvert/CodepointIterator.cpp
     src/Yconvert/Convert.cpp
     src/Yconvert/Converter.cpp
     src/Yconvert/Decoder.cpp

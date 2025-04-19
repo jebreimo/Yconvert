@@ -5,7 +5,7 @@
 // This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
-#include "Yconvert/CodePointIterator.hpp"
+#include "Yconvert/CodepointIterator.hpp"
 
 #include <sstream>
 #include <vector>
@@ -14,7 +14,7 @@
 TEST_CASE("Iterate over a buffer")
 {
     std::string buffer = "Hello!";
-    Yconvert::CodePointIterator iter(buffer.data(), buffer.size(),
+    Yconvert::CodepointIterator iter(buffer.data(), buffer.size(),
                                      Yconvert::Encoding::ASCII);
     char32_t c;
     REQUIRE(iter.next(&c));
@@ -47,7 +47,7 @@ TEST_CASE("Iterate over a stream")
     }
 
     stream.seekg(0);
-    Yconvert::CodePointIterator iter(stream, Yconvert::Encoding::UTF_8);
+    Yconvert::CodepointIterator iter(stream, Yconvert::Encoding::UTF_8);
     unsigned n = 1 << 11;
     char32_t c;
     while (iter.next(&c))
@@ -62,7 +62,7 @@ TEST_CASE("Range-based for loop")
     std::vector<char16_t> buffer = {'A', 0xD900, 0xDD00, 'B'};
     std::u32string_view expected = U"A\U00050100B";
 
-    for (auto c: Yconvert::CodePointIterator(std::span(buffer),
+    for (auto c: Yconvert::CodepointIterator(std::span(buffer),
                                              Yconvert::Encoding::UTF_16_NATIVE))
     {
         REQUIRE(!expected.empty());

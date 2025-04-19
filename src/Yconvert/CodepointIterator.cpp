@@ -5,7 +5,7 @@
 // This file is distributed under the Zero-Clause BSD License.
 // License text is included with the source distribution.
 //****************************************************************************
-#include "Yconvert/CodePointIterator.hpp"
+#include "Yconvert/CodepointIterator.hpp"
 #include <istream>
 #include <variant>
 #include "Yconvert/Details/InputStreamWrapper.hpp"
@@ -68,7 +68,7 @@ namespace Yconvert
         using Source = std::variant<StreamReader, BufferReader>;
     }
 
-    struct CodePointIterator::Data
+    struct CodepointIterator::Data
     {
         explicit Data(std::span<const char> buffer) // NOLINT(*-pro-type-member-init)
             : source(BufferReader(buffer))
@@ -83,9 +83,9 @@ namespace Yconvert
         std::unique_ptr<Decoder> decoder;
     };
 
-    CodePointIterator::CodePointIterator() = default;
+    CodepointIterator::CodepointIterator() = default;
 
-    CodePointIterator::CodePointIterator(const void* buffer, size_t size,
+    CodepointIterator::CodepointIterator(const void* buffer, size_t size,
                                          Encoding encoding,
                                          ErrorPolicy error_policy)
         : data_(std::make_unique<Data>(std::span{static_cast<const char*>(buffer), size}))
@@ -94,7 +94,7 @@ namespace Yconvert
         data_->decoder->set_error_policy(error_policy);
     }
 
-    CodePointIterator::CodePointIterator(std::istream& stream,
+    CodepointIterator::CodepointIterator(std::istream& stream,
                                          Encoding encoding,
                                          ErrorPolicy error_policy)
         : data_(std::make_unique<Data>(stream))
@@ -103,7 +103,7 @@ namespace Yconvert
         data_->decoder->set_error_policy(error_policy);
     }
 
-    CodePointIterator::CodePointIterator(CodePointIterator&& other) noexcept
+    CodepointIterator::CodepointIterator(CodepointIterator&& other) noexcept
         : chars_(other.chars_),
           i_(other.i_),
           data_(std::move(other.data_))
@@ -112,9 +112,9 @@ namespace Yconvert
         other.i_ = 0;
     }
 
-    CodePointIterator::~CodePointIterator() = default;
+    CodepointIterator::~CodepointIterator() = default;
 
-    CodePointIterator& CodePointIterator::operator=(CodePointIterator&& other) noexcept
+    CodepointIterator& CodepointIterator::operator=(CodepointIterator&& other) noexcept
     {
         if (this == &other)
             return *this;
@@ -127,7 +127,7 @@ namespace Yconvert
         return *this;
     }
 
-    bool CodePointIterator::fill_buffer()
+    bool CodepointIterator::fill_buffer()
     {
         if (!data_)
             return false;
@@ -144,7 +144,7 @@ namespace Yconvert
                 return reader.read(data.buffer, std::size(data.buffer), *data.decoder);
             }
 
-            CodePointIterator::Data& data;
+            CodepointIterator::Data& data;
         };
 
         auto size = std::visit(Visitor{*data_}, data_->source);

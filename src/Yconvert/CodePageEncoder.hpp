@@ -13,7 +13,7 @@
 
 namespace Yconvert
 {
-    struct CodePointMapRange
+    struct CodepointMapRange
     {
         char32_t codepoint;
         uint8_t index;
@@ -45,6 +45,6 @@ namespace Yconvert
         template <typename FwdIt>
         void encode_impl(const char32_t* src, FwdIt dst, size_t count);
 
-        std::vector<CodePointMapRange> ranges_;
+        std::vector<CodepointMapRange> ranges_;
     };
 }

@@ -28,7 +28,7 @@ namespace Yconvert
 {
     struct CodePageRange
     {
-        uint16_t startCodePoint;
+        uint16_t startCodepoint;
         uint8_t startIndex;
         uint8_t length;
     };

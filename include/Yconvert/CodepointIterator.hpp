@@ -27,7 +27,7 @@ namespace Yconvert
      * The iterator can be used in range-based for loops, e.g.:
      * @code
      * std::string text = "Hello, world!";
-     * for (char32_t c : CodePointIterator(text, Encoding::UTF8))
+     * for (char32_t c : CodepointIterator(text, Encoding::UTF8))
      * {
      *    // Do something with c...
      * }
@@ -35,46 +35,46 @@ namespace Yconvert
      *
      * @note This iterator does not support the range concept of std::ranges.
      */
-    class YCONVERT_API CodePointIterator
+    class YCONVERT_API CodepointIterator
     {
     public:
-        CodePointIterator();
+        CodepointIterator();
 
-        CodePointIterator(const void* buffer, size_t size,
+        CodepointIterator(const void* buffer, size_t size,
                           Encoding encoding,
                           ErrorPolicy error_policy = ErrorPolicy::REPLACE);
 
         template <typename CharType>
-        CodePointIterator(std::basic_string_view<CharType> str,
+        CodepointIterator(std::basic_string_view<CharType> str,
                           Encoding encoding,
                           ErrorPolicy error_policy = ErrorPolicy::REPLACE)
-            : CodePointIterator(str.data(), str.size() * sizeof(CharType),
+            : CodepointIterator(str.data(), str.size() * sizeof(CharType),
                                 encoding,
                                 error_policy)
         {}
 
         template <typename CharType>
-        CodePointIterator(std::span<CharType> str,
+        CodepointIterator(std::span<CharType> str,
                           Encoding encoding,
                           ErrorPolicy error_policy = ErrorPolicy::REPLACE)
-            : CodePointIterator(str.data(), str.size() * sizeof(CharType),
+            : CodepointIterator(str.data(), str.size() * sizeof(CharType),
                                 encoding,
                                 error_policy)
         {}
 
-        CodePointIterator(std::istream& stream,
+        CodepointIterator(std::istream& stream,
                           Encoding encoding,
                           ErrorPolicy error_policy = ErrorPolicy::REPLACE);
 
-        CodePointIterator(const CodePointIterator&) = delete;
+        CodepointIterator(const CodepointIterator&) = delete;
 
-        CodePointIterator(CodePointIterator&&) noexcept;
+        CodepointIterator(CodepointIterator&&) noexcept;
 
-        ~CodePointIterator();
+        ~CodepointIterator();
 
-        CodePointIterator& operator=(const CodePointIterator&) = delete;
+        CodepointIterator& operator=(const CodepointIterator&) = delete;
 
-        CodePointIterator& operator=(CodePointIterator&&) noexcept;
+        CodepointIterator& operator=(CodepointIterator&&) noexcept;
 
         /**
          * @brief Returns the next code point in the buffer or stream.
@@ -101,12 +101,12 @@ namespace Yconvert
 
 
     /**
-     * @brief Adapts a CodePointIterator to be used in range-based for loops.
+     * @brief Adapts a CodepointIterator to be used in range-based for loops.
      *
      * This class is not intended to be used directly, use the begin() and
-     * end() functions on CodePointIterator instead.
+     * end() functions on CodepointIterator instead.
      */
-    class CodePointInputIteratorAdapter
+    class CodepointInputIteratorAdapter
     {
     public:
         typedef char32_t value_type;
@@ -115,14 +115,14 @@ namespace Yconvert
         typedef const value_type* pointer;
         typedef const value_type& reference;
 
-        CodePointInputIteratorAdapter() = default;
+        CodepointInputIteratorAdapter() = default;
 
-        explicit CodePointInputIteratorAdapter(CodePointIterator& iterator)
+        explicit CodepointInputIteratorAdapter(CodepointIterator& iterator)
             : iterator_(&iterator),
               is_end_(!iterator_->next(&character_))
         {}
 
-        CodePointInputIteratorAdapter& operator++(int)
+        CodepointInputIteratorAdapter& operator++(int)
         {
             if (!is_end_)
                 is_end_ = !iterator_->next(&character_);
@@ -145,33 +145,33 @@ namespace Yconvert
             return &character_;
         }
     private:
-        friend bool operator==(const CodePointInputIteratorAdapter& lhs,
-                               const CodePointInputIteratorAdapter& rhs);
+        friend bool operator==(const CodepointInputIteratorAdapter& lhs,
+                               const CodepointInputIteratorAdapter& rhs);
 
-        CodePointIterator* iterator_ = nullptr;
+        CodepointIterator* iterator_ = nullptr;
         char32_t character_ = INVALID_CHAR;
         bool is_end_ = true;
     };
 
-    inline bool operator==(const CodePointInputIteratorAdapter& lhs,
-                           const CodePointInputIteratorAdapter& rhs)
+    inline bool operator==(const CodepointInputIteratorAdapter& lhs,
+                           const CodepointInputIteratorAdapter& rhs)
     {
         return lhs.iterator_ == rhs.iterator_ || lhs.is_end_ == rhs.is_end_;
     }
 
-    inline bool operator!=(const CodePointInputIteratorAdapter& lhs,
-                           const CodePointInputIteratorAdapter& rhs)
+    inline bool operator!=(const CodepointInputIteratorAdapter& lhs,
+                           const CodepointInputIteratorAdapter& rhs)
     {
         return !(lhs == rhs);
     }
 
-    inline auto begin(CodePointIterator& iterator)
+    inline auto begin(CodepointIterator& iterator)
     {
-        return CodePointInputIteratorAdapter(iterator);
+        return CodepointInputIteratorAdapter(iterator);
     }
 
-    inline auto end(const CodePointIterator&)
+    inline auto end(const CodepointIterator&)
     {
-        return CodePointInputIteratorAdapter();
+        return CodepointInputIteratorAdapter();
     }
 }

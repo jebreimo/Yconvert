@@ -17,11 +17,11 @@ namespace Yconvert
     namespace
     {
         std::optional<char>
-        find_char(const std::vector<CodePointMapRange>& ranges, char32_t c)
+        find_char(const std::vector<CodepointMapRange>& ranges, char32_t c)
         {
             auto it = std::upper_bound(
                 ranges.begin(), ranges.end(),
-                CodePointMapRange{c, 0, 0},
+                CodepointMapRange{c, 0, 0},
                 [](auto& a, auto& b){return a.codepoint < b.codepoint;});
             if (it != ranges.begin())
             {
