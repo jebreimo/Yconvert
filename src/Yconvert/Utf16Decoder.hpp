@@ -23,7 +23,7 @@ namespace Yconvert
             if (it == end)
                 return INVALID_CHAR;
             u.b[SWAP_BYTES ? 0 : 1] = uint8_t(*it++);
-            return u.c;
+            return char32_t(u.c);
         }
 
         template <bool SWAP_BYTES, typename FwdIt>
@@ -74,7 +74,7 @@ namespace Yconvert
     }
 
     template <bool SWAP_BYTES>
-    class Utf16Decoder : public Decoder
+    class Utf16Decoder final : public Decoder
     {
     public:
         Utf16Decoder()
@@ -85,41 +85,41 @@ namespace Yconvert
     protected:
         size_t skip_codepoint(const void* src, size_t src_size) const final
         {
-            auto csrc = static_cast<const char*>(src);
-            auto initial_src = csrc;
-            Detail::skip_next_utf16_code_point<SWAP_BYTES>(csrc, csrc + src_size);
-            return size_t(csrc - initial_src);
+            auto c_src = static_cast<const char*>(src);
+            const auto initial_src = c_src;
+            Detail::skip_next_utf16_code_point<SWAP_BYTES>(c_src, c_src + src_size);
+            return size_t(c_src - initial_src);
         }
 
         std::pair<size_t, size_t>
         do_decode(const void* src, size_t src_size,
                   char32_t* dst, size_t dst_size) const final
         {
-            auto csrc = static_cast<const char*>(src);
-            auto initial_src = csrc;
-            auto initial_dst = dst;
-            auto src_end = csrc + src_size;
-            auto dst_end = dst + dst_size;
+            auto c_src = static_cast<const char*>(src);
+            const auto initial_src = c_src;
+            const auto initial_dst = dst;
+            const auto src_end = c_src + src_size;
+            const auto dst_end = dst + dst_size;
             while (dst != dst_end)
             {
-                auto value = Detail::next_utf16_code_point<SWAP_BYTES>(csrc, src_end);
+                auto value = Detail::next_utf16_code_point<SWAP_BYTES>(c_src, src_end);
                 if (value == INVALID_CHAR)
                     break;
                 *dst++ = value;
             }
-            return {size_t(csrc - initial_src), size_t(dst - initial_dst)};
+            return {size_t(c_src - initial_src), size_t(dst - initial_dst)};
         }
 
         std::pair<size_t, size_t>
         count_valid_codepoints(const void* src, size_t src_size) const override
         {
             auto c_src = static_cast<const char*>(src);
-            auto initial_src = c_src;
-            auto src_end = c_src + src_size;
+            const auto initial_src = c_src;
+            const auto src_end = c_src + src_size;
             size_t valid_codepoints = 0;
             while (true)
             {
-                auto prev_src = c_src;
+                const auto prev_src = c_src;
                 auto value = Detail::next_utf16_code_point<SWAP_BYTES>(c_src, src_end);
                 if (value == INVALID_CHAR || value == 0)
                     return {valid_codepoints, size_t(prev_src - initial_src)};
